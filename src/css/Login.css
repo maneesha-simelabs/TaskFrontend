@@ -261,6 +261,21 @@ body {
   font-weight: 600;
 }
 
+.error {
+  color: #dc2626 !important;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+input.error-input {
+  border-color: #dc2626;
+}
+
+input.error-input:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
 /* Mobile */
 
 @media (max-width: 900px) {

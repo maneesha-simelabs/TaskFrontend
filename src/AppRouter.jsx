@@ -7,6 +7,8 @@ import Dashboard from "./components/Dashboard";
 import Users from "./pages/Users";
 import ProtectedRoutes from "./Router/ProtectedRoutes";
 import Tasks from "./pages/Tasks";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function AppRouter() {
   return (
@@ -25,6 +27,14 @@ function AppRouter() {
             element={<ProtectedRoutes>{<Tasks />}</ProtectedRoutes>}
           />
         </Route>
+        <Route
+          path="/forgotPassword"
+          element={<ForgotPassword></ForgotPassword>}
+        ></Route>
+        <Route
+          path="/reset-password"
+          element={<ResetPassword></ResetPassword>}
+        ></Route>
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </div>

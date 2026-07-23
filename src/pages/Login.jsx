@@ -1,19 +1,46 @@
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import "../css/Login.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("admin@taskflow.com");
   const [password, setPassword] = useState("Admin1234");
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    await login({ email, password });
-    navigate("/");
+    try {
+      e.preventDefault();
+      if (!validate()) return;
+      const result = await login({ email, password });
+      navigate("/");
+    } catch (e) {
+      console.log(e.userMessage);
+      setErrors({ submit: e.userMessage });
+    }
   };
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    navigate("/forgotPassword");
+  };
+  const validate = () => {
+    const newErrors = {};
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Enter a valid email address";
+    }
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   return (
     <div className="login-page">
       <div className="left-panel">
@@ -57,22 +84,33 @@ function Login() {
             <label>Email Address</label>
 
             <input
+              className={errors.email ? "error-input" : ""}
               type="email"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                validate();
+                setEmail(e.target.value);
+              }}
             />
+
+            {errors.email && <p className="error">{errors.email}</p>}
           </div>
 
           <div className="input-group">
             <label>Password</label>
 
             <input
+              className={errors.password ? "error-input" : ""}
               type="password"
               placeholder="Enter password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                validate();
+              }}
             />
+            {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
           <div className="options">
@@ -81,21 +119,23 @@ function Login() {
               Remember me
             </label>
 
-            <a href="#">Forgot Password?</a>
+            <button type="button" onClick={handleClick}>
+              Forgot Password?
+            </button>
           </div>
-
+          {errors.submit && <p className="error">{errors.submit}</p>}
           <button type="submit" className="login-btn">
             Login
           </button>
 
-          <button type="button" className="google-btn">
+          {/* <button type="button" className="google-btn">
             Continue with Google
-          </button>
+          </button> */}
 
-          <p className="signup">
+          {/* <p className="signup">
             Don't have an account?
             <a href="#">Create Account</a>
-          </p>
+          </p> */}
         </form>
       </div>
     </div>

@@ -70,26 +70,30 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (credentials) => {
-    const response = await userLogin(credentials);
-    const payload = response?.data ?? response;
-    const accessToken = payload?.accessToken || payload?.token;
-    const refreshToken = payload?.refreshToken || payload?.user?.refreshToken;
-    const userData = payload?.user ?? payload;
+    try {
+      const response = await userLogin(credentials);
+      const payload = response?.data ?? response;
+      const accessToken = payload?.accessToken || payload?.token;
+      const refreshToken = payload?.refreshToken || payload?.user?.refreshToken;
+      const userData = payload?.user ?? payload;
 
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+      }
+
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
+
+      if (userData) {
+        localStorage.setItem("taskmanagement_user", JSON.stringify(userData));
+      }
+
+      setUser(userData ?? null);
+      return payload;
+    } catch (e) {
+      throw e;
     }
-
-    if (refreshToken) {
-      localStorage.setItem("refreshToken", refreshToken);
-    }
-
-    if (userData) {
-      localStorage.setItem("taskmanagement_user", JSON.stringify(userData));
-    }
-
-    setUser(userData ?? null);
-    return payload;
   };
 
   const logout = () => {

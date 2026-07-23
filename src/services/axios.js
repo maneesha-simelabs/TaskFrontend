@@ -77,20 +77,20 @@ api.interceptors.response.use(
   },
 );
 
-export const login = async ({ email, password }) => {
-  try {
-    const results = await api.post(`/auth/login`, {
-      email,
-      password,
-      //   email: "admin@taskflow.com",
-      //   password: "Admin1234",
-    });
+// export const login = async ({ email, password }) => {
+//   try {
+//     const results = await api.post(`/auth/login`, {
+//       email,
+//       password,
+//       //   email: "admin@taskflow.com",
+//       //   password: "Admin1234",
+//     });
 
-    return unwrapResponseData(results);
-  } catch (e) {
-    console.log(e);
-  }
-};
+//     return unwrapResponseData(results);
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 export const userLogin = async (userCreds) => {
   const email = userCreds?.username || userCreds?.email || "emilys";
   const password = userCreds?.password || "emilyspass";
@@ -106,6 +106,28 @@ export const userLogin = async (userCreds) => {
       // Optional configurations go in the THIRD argument
       //   withCredentials: true,
     },
+  );
+  return unwrapResponseData(result);
+};
+
+export const forgotPassword = async (email) => {
+  const result = await api.post(
+    "/auth/forgot-password",
+    {
+      email,
+    },
+    {},
+  );
+  return unwrapResponseData(result);
+};
+export const resetPassword = async (token, password) => {
+  const result = await api.post(
+    "/auth/reset-password",
+    {
+      token,
+      password,
+    },
+    {},
   );
   return unwrapResponseData(result);
 };
