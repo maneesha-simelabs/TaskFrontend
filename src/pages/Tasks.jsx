@@ -7,6 +7,7 @@ import {
   updateTask,
   getMyTasks,
   getUsers,
+  getCategories,
 } from "../services/axios";
 import TaskModal from "../components/TaskModal";
 import { AuthContext } from "../contexts/AuthContext";
@@ -21,15 +22,18 @@ export default function Tasks({}) {
   const currentUser = user?.data?.user || user?.user || user;
   const isAdmin = currentUser?.role === "Admin";
   const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        let tasks, users;
+        let tasks, users, categories;
         if (isAdmin) {
           tasks = await getTasks();
           users = await getUsers();
           setUsers(users);
+          categories = await getCategories();
+          setCategories(categories);
         } else tasks = await getMyTasks();
         setTasks(tasks);
         setNeedReload(false);
@@ -56,7 +60,8 @@ export default function Tasks({}) {
       console.log("Update Task", task);
       task = { ...task, id: selectedTask._id };
       const result = await updateTask(task);
-      if (result.success == true) setNeedReload(true);
+      // if (result.success == true)
+      setNeedReload(true);
       // PUT API
     } else {
       console.log("Create Task", task);
@@ -110,6 +115,7 @@ export default function Tasks({}) {
       <TaskModal
         isOpen={open}
         users={users}
+        categories={categories}
         onClose={() => setOpen(false)}
         onSave={handleSave}
         initialData={selectedTask}

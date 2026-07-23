@@ -34,7 +34,9 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const result = await myProfile();
-      setUser(result);
+      const payload = result?.data ?? result;
+      const userData = payload?.user ?? payload;
+      setUser(userData);
     } catch (error) {
       console.error("Failed to fetch profile:", error);
 
@@ -44,7 +46,9 @@ export const AuthProvider = ({ children }) => {
         if (refreshedToken) {
           try {
             const result = await myProfile();
-            setUser(result);
+            const payload = result?.data ?? result;
+            const userData = payload?.user ?? payload;
+            setUser(userData);
             setAuthReady(true);
             return;
           } catch (retryError) {
@@ -70,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     const payload = response?.data ?? response;
     const accessToken = payload?.accessToken || payload?.token;
     const refreshToken = payload?.refreshToken || payload?.user?.refreshToken;
-    const userData = payload?.user || payload;
+    const userData = payload?.user ?? payload;
 
     if (accessToken) {
       localStorage.setItem("accessToken", accessToken);

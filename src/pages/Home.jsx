@@ -26,7 +26,7 @@ export default function Home() {
             <button
               className="btn-secondary"
               onClick={() => {
-                navigate("login");
+                navigate("/login");
               }}
             >
               Login

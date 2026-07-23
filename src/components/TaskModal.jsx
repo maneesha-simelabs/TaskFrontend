@@ -6,6 +6,7 @@ const initialForm = {
   description: "",
   priority: "Medium",
   status: "Todo",
+  category: "",
   dueDate: "",
   assignedTo: "",
 };
@@ -13,6 +14,7 @@ const initialForm = {
 export default function TaskModal({
   isOpen,
   users,
+  categories,
   onClose,
   onSave,
   initialData,
@@ -28,6 +30,7 @@ export default function TaskModal({
         status: initialData.status,
         dueDate: initialData.dueDate?.split("T")[0],
         assignedTo: initialData.assignedTo?._id || initialData.assignedTo,
+        category: initialData?.category?._id || initialData.category,
       });
     } else {
       setForm(initialForm);
@@ -134,6 +137,18 @@ export default function TaskModal({
             {users.map((user) => (
               <option key={user._id} value={user._id}>
                 {user.name}
+              </option>
+            ))}
+          </select>
+
+          <label>Category</label>
+
+          <select name="category" value={form.category} onChange={handleChange}>
+            <option value="">Select Category</option>
+
+            {categories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
               </option>
             ))}
           </select>

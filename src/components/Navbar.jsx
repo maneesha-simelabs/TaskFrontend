@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link, NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../css/Header.css";
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -8,8 +8,10 @@ const NavBar = () => {
   const currentUser = user?.data?.user || user?.user || user;
   const isAdmin = currentUser?.role === "Admin";
 
+  const navigate = useNavigate();
   const handleLogout = () => {
     logout();
+    navigate("/");
   };
   return (
     <div className="navbar">
@@ -17,7 +19,7 @@ const NavBar = () => {
         <NavLink to="/">Task Management</NavLink>
       </div>
       <div className="navbar-links">
-        <NavLink className="nav-link" to="/">
+        <NavLink className="nav-link" to="/home">
           Home
         </NavLink>
         {isAdmin && (
@@ -30,7 +32,7 @@ const NavBar = () => {
         <NavLink className="nav-link" to="/tasks">
           Tasks
         </NavLink>
-        <NavLink className="nav-link" to="/Login" onClick={handleLogout}>
+        <NavLink className="nav-link" to="/login" onClick={handleLogout}>
           Logout
         </NavLink>
       </div>

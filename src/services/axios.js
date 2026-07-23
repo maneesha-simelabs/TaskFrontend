@@ -2,7 +2,30 @@ import axios from "axios";
 import { getRawTokenFromStorage, isTokenExpired } from "../utils/token";
 import { getApiErrorMessage } from "../utils/errorHandler";
 
-const api = axios.create({ baseURL: "http://localhost:5000/api" });
+const api = axios.create({
+  baseURL: "http://localhost:5000/api",
+  withCredentials: true,
+});
+
+const refreshApi = axios.create({
+  baseURL: "http://localhost:5000/api",
+  withCredentials: true,
+});
+
+const unwrapResponseData = (response) => {
+  const body = response?.data ?? response;
+
+  if (
+    body &&
+    typeof body === "object" &&
+    "data" in body &&
+    body.data !== undefined
+  ) {
+    return body.data;
+  }
+
+  return body;
+};
 
 api.interceptors.request.use(async (config) => {
   config.headers = config.headers || {};
@@ -63,7 +86,7 @@ export const login = async ({ email, password }) => {
       //   password: "Admin1234",
     });
 
-    return results.data;
+    return unwrapResponseData(results);
   } catch (e) {
     console.log(e);
   }
@@ -84,7 +107,7 @@ export const userLogin = async (userCreds) => {
       //   withCredentials: true,
     },
   );
-  return result.data;
+  return unwrapResponseData(result);
 };
 
 export const myProfile = async () => {
@@ -97,25 +120,28 @@ export const myProfile = async () => {
     credentials: "include", // Include cookies (e.g., accessToken) in the request
   });
 
-  return result.data;
+  return unwrapResponseData(result);
 };
 
 export async function getUsers() {
   const response = await api.get(`/users`);
+  const payload = unwrapResponseData(response);
 
-  return response.data.data.users;
+  return payload?.users;
 }
 
 export async function getTasks() {
   const response = await api.get(`/tasks`);
+  const payload = unwrapResponseData(response);
 
-  return response.data.data.tasks;
+  return payload?.tasks;
 }
 
 export async function getMyTasks() {
   const response = await api.get(`/tasks/me`);
+  const payload = unwrapResponseData(response);
 
-  return response.data.data.tasks;
+  return payload?.tasks;
 }
 
 export async function createTask(task) {
@@ -129,7 +155,7 @@ export async function createTask(task) {
       Authorization: `Bearer ${getRawTokenFromStorage()}`, // Pass JWT via Authorization header
     },
   });
-  return result.data;
+  return unwrapResponseData(result);
 }
 
 export async function updateTask(task) {
@@ -138,7 +164,13 @@ export async function updateTask(task) {
       Authorization: `Bearer ${getRawTokenFromStorage()}`,
     },
   });
-  return result.data;
+  return unwrapResponseData(result);
+}
+
+export async function getCategories() {
+  const response = await api.get(`/categories`);
+
+  return response.data.data.categories;
 }
 
 export async function refreshAccessToken() {
@@ -146,23 +178,40 @@ export async function refreshAccessToken() {
 
   if (!refreshToken) return null;
 
-  try {
-    const res = await api.post("/api/auth/refresh-token", {
-      refreshToken,
-    });
+  const res = await refreshApi.post("/auth/refresh-token", {
+    refreshToken,
+  });
 
-    const newAccessToken = res.data.accessToken;
+  const payload = unwrapResponseData(res);
 
-    if (newAccessToken) {
-      localStorage.setItem("accessToken", newAccessToken);
-    }
+  localStorage.setItem("accessToken", payload.accessToken);
 
-    return newAccessToken;
-  } catch (err) {
-    console.error("Failed to refresh token", err);
-    return null;
-  }
+  return payload.accessToken;
 }
+
+// export async function refreshAccessToken() {
+//   const refreshToken = localStorage.getItem("refreshToken");
+
+//   if (!refreshToken) return null;
+
+//   try {
+//     const res = await api.post("/auth/refresh-token", {
+//       refreshToken,
+//     });
+
+//     const payload = unwrapResponseData(res);
+//     const newAccessToken = payload?.accessToken;
+
+//     if (newAccessToken) {
+//       localStorage.setItem("accessToken", newAccessToken);
+//     }
+
+//     return newAccessToken;
+//   } catch (err) {
+//     console.error("Failed to refresh token", err);
+//     return null;
+//   }
+// }
 
 // export { refreshAccessToken };
 // export default api;

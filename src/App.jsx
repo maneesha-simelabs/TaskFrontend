@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
 import "./App.css";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import AppRouter from "./AppRouter";
 import { BrowserRouter } from "react-router-dom";
 import { Suspense } from "react";
