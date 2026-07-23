@@ -1,0 +1,33 @@
+/* Base style for all skeleton shapes */
+.skeleton {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+/* The moving shine animation */
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+/* Specific component placeholders */
+.skeleton-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%; /* Makes it circular */
+}
+
+.skeleton-title {
+  height: 20px;
+  width: 60%;
+  margin-bottom: 10px;
+}
+
+.skeleton-text {
+  height: 14px;
+  width: 100%;
+}
