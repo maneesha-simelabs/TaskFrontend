@@ -1,6 +1,16 @@
 import React from "react";
+import { useEffect } from "react";
 
-function DeleteModal() {
+function DeleteModal({ isDeleteModalOpen }) {
+  useEffect(() => {
+    document.body.style.overflow = isDeleteModalOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isDeleteModalOpen]);
+
+  if (!isDeleteModalOpen) return null;
   return (
     <div>
       DeleteModal

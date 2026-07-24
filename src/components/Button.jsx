@@ -1,14 +1,19 @@
 import React from "react";
 
-function Button(ariaLabelOptions, ariaLabelCondition) {
+function Button(text, type, onClick) {
+  //ariaLabelOptions, ariaLabelCondition
   return (
     <div>
       <button
-        aria-label={
-          ariaLabelCondition ? ariaLabelOptions[0] : ariaLabelOptions[1]
-        }
+        type={type}
+        onClick={onclick}
+        // aria-label={
+        //   ariaLabelCondition ? ariaLabelOptions[0] : ariaLabelOptions[1]
+        // }
         // aria-label={showPassword ? "Hide password" : "Show password"}
-      ></button>
+      >
+        {text}
+      </button>
     </div>
   );
 }

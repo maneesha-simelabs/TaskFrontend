@@ -12,10 +12,13 @@ import {
 import TaskModal from "../components/TaskModal";
 import { AuthContext } from "../contexts/AuthContext";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import Card from "../components/Card";
+import DeleteModal from "../components/DeleteModal";
 
 export default function Tasks({}) {
   const [tasks, setTasks] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [needReload, setNeedReload] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -83,6 +86,11 @@ export default function Tasks({}) {
     setOpen(true);
   };
 
+  const handleDelete = (task) => {
+    setSelectedTask(task);
+    setisDeleteModalOpen(true);
+  };
+
   const handleSave = async (task) => {
     if (selectedTask) {
       console.log("Update Task", task);
@@ -116,8 +124,51 @@ export default function Tasks({}) {
         {!loading && !error && tasks?.length === 0 && (
           <p>No tasks available.</p>
         )}
-        {tasks?.map((task) => (
-          <article className="user-card" key={task._id}>
+
+        {tasks.map((task) => (
+          <Card
+            key={task._id}
+            className="cd-card"
+            title={task.title}
+            actions={
+              isAdmin
+                ? [
+                    <button
+                      key="edit"
+                      onClick={() => handleEdit(task)}
+                      className="edit-btn"
+                    >
+                      ✏️
+                    </button>,
+                    <button
+                      key="delete"
+                      onClick={() => handleDelete(task)}
+                      className="delete-btn"
+                    >
+                      🗑️
+                    </button>,
+                  ]
+                : null
+            }
+          >
+            <>
+              <p>{task.description}</p>
+              <span
+                style={{ backgroundColor: task.color }}
+                className="status-badge"
+              >
+                Status: {task.status} <br />
+                Priority: {task.priority} <br />
+                Due: {task.dueDate} <br />
+                Category: {task.category?.name || "None"} <br />
+                Assigned To: {task.assignedTo?.name || "Unassigned"}
+              </span>
+            </>
+          </Card>
+        ))}
+
+        {/* {tasks?.map((task) => (
+          <article className="cd-card" key={task._id}>
             <h3>{task.title}</h3>
 
             <p>{task.description}</p>
@@ -145,9 +196,8 @@ export default function Tasks({}) {
               </div>
             )}
 
-            {/* <button className="view-btn">View Profile</button> */}
           </article>
-        ))}
+        ))} */}
       </div>
       {!loading && totalPages > 1 && (
         <div>
@@ -175,6 +225,7 @@ export default function Tasks({}) {
         onSave={handleSave}
         initialData={selectedTask}
       />
+      <DeleteModal isDeleteModalOpen={isDeleteModalOpen}></DeleteModal>
     </section>
   );
 }

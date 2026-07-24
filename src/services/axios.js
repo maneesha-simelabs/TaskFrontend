@@ -188,7 +188,7 @@ export async function getUsers(signal) {
 }
 
 export async function getTasks(page, signal) {
-  const response = await api.get(`/tasks?page=${page}`, { signal });
+  const response = await api.get(`/tasks?page=${page}&limit=9`, { signal });
   const payload = unwrapResponseData(response);
 
   if (Array.isArray(payload)) return { tasks: payload, pagination: null };
