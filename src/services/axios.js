@@ -192,9 +192,15 @@ export async function getTasks(page, signal) {
   const payload = unwrapResponseData(response);
 
   if (Array.isArray(payload)) return { tasks: payload, pagination: null };
-  if (Array.isArray(payload?.tasks)) return { tasks: payload.tasks, pagination: payload.pagination ?? null };
-  if (Array.isArray(payload?.data?.tasks)) return { tasks: payload.data.tasks, pagination: payload.data.pagination ?? null };
-  if (Array.isArray(payload?.data)) return { tasks: payload.data, pagination: null };
+  if (Array.isArray(payload?.tasks))
+    return { tasks: payload.tasks, pagination: payload.pagination ?? null };
+  if (Array.isArray(payload?.data?.tasks))
+    return {
+      tasks: payload.data.tasks,
+      pagination: payload.data.pagination ?? null,
+    };
+  if (Array.isArray(payload?.data))
+    return { tasks: payload.data, pagination: null };
 
   return { tasks: [], pagination: null };
 }

@@ -9,7 +9,9 @@ function ProtectedRoutes({ children }) {
   const isLoggedIn = Boolean(getRawTokenFromStorage());
 
   if (!authReady) {
-    return <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>;
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>
+    );
   }
 
   if (!isLoggedIn) {

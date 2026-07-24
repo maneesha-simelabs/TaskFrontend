@@ -46,7 +46,9 @@ export default function Tasks({}) {
           nextTotalPages = res?.pagination?.totalPages ?? 1;
 
           nextUsers = await getUsers(controller.signal).catch(() => []);
-          nextCategories = await getCategories(controller.signal).catch(() => []);
+          nextCategories = await getCategories(controller.signal).catch(
+            () => [],
+          );
         } else {
           nextTasks = await getMyTasks(controller.signal).catch(() => []);
         }
