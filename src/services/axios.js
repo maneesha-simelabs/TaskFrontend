@@ -240,6 +240,17 @@ export async function updateTask(task) {
   return unwrapResponseData(result);
 }
 
+export async function deleteTask(id) {
+  const result = await api.delete(`/tasks/${id}`, {
+    headers: {
+      Authorization: `Bearer ${getRawTokenFromStorage()}`,
+    },
+    data: {
+      id: id,
+    },
+  });
+}
+
 export async function getCategories() {
   const response = await api.get(`/categories`);
 

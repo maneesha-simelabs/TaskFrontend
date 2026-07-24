@@ -5,6 +5,7 @@ import {
   getTasks,
   createTask,
   updateTask,
+  deleteTask,
   getMyTasks,
   getUsers,
   getCategories,
@@ -38,28 +39,28 @@ export default function Tasks({}) {
       setError("");
 
       try {
-        let nextTasks = [];
-        let nextUsers = [];
-        let nextCategories = [];
-        let nextTotalPages = 1;
+        let nTasks = [];
+        let nUsers = [];
+        let nCategories = [];
+        let nTotalPages = 1;
 
         if (isAdmin) {
           const res = await getTasks(curPage, controller.signal);
-          nextTasks = res?.tasks ?? [];
-          nextTotalPages = res?.pagination?.totalPages ?? 1;
-
-          nextUsers = await getUsers(controller.signal).catch(() => []);
-          nextCategories = await getCategories(controller.signal).catch(
+          nTasks = res?.tasks ?? [];
+          nTotalPages = res?.pagination?.totalPages ?? 1;
+          setTotalPages(nTotalPages);
+          nUsers = await getUsers(controller.signal).catch(() => []);
+          nCategories = await getCategories(controller.signal).catch(
             () => [],
           );
         } else {
-          nextTasks = await getMyTasks(controller.signal).catch(() => []);
+          nTasks = await getMyTasks(controller.signal).catch(() => []);
         }
 
-        setTasks(nextTasks);
-        setUsers(nextUsers);
-        setCategories(nextCategories);
-        setTotalPages(nextTotalPages);
+        setTasks(nTasks);
+        setUsers(nUsers);
+        setCategories(nCategories);
+        setTotalPages(nTotalPages);
         setNeedReload(false);
         setError("");
       } catch (err) {
@@ -89,6 +90,15 @@ export default function Tasks({}) {
   const handleDelete = (task) => {
     setSelectedTask(task);
     setisDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    // console.log(taskid);
+    // console.log(id);
+    // console.log(selectedTask);
+    deleteTask(selectedTask._id);
+    setisDeleteModalOpen(false);
+    setSelectedTask(null);
   };
 
   const handleSave = async (task) => {
@@ -225,7 +235,13 @@ export default function Tasks({}) {
         onSave={handleSave}
         initialData={selectedTask}
       />
-      <DeleteModal isDeleteModalOpen={isDeleteModalOpen}></DeleteModal>
+      <DeleteModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        onClose={() => setisDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        taskTitle={selectedTask?.title}
+        taskId={selectedTask?._id}
+      />
     </section>
   );
 }
