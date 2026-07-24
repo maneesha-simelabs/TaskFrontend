@@ -2,23 +2,34 @@ import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import "../css/Login.css";
 import { useNavigate, Navigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [email, setEmail] = useState("admin@taskflow.com");
-  const [password, setPassword] = useState("Admin1234");
+  const [email, setEmail] = useState(""); //"admin@taskflow.com"
+  const [password, setPassword] = useState(""); //Admin1234
   const [errors, setErrors] = useState({});
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem("rememberMe") === "true";
+  });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       if (!validate()) return;
-      const result = await login({ email, password });
+
+      const result = await login({ email, password, rememberMe });
+
+      if (result?.success === false) {
+        throw new Error(result?.message || "Login failed");
+      }
+
       navigate("/");
     } catch (e) {
-      console.log(e.userMessage);
-      setErrors({ submit: e.userMessage });
+      console.log(e.userMessage || e.message);
+      setErrors({ submit: e.userMessage || e.message || "Login failed" });
     }
   };
 
@@ -97,12 +108,12 @@ function Login() {
             {errors.email && <p className="error">{errors.email}</p>}
           </div>
 
-          <div className="input-group">
+          <div className="input-group password-box login">
             <label>Password</label>
 
             <input
               className={errors.password ? "error-input" : ""}
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter password"
               value={password}
               onChange={(e) => {
@@ -110,12 +121,22 @@ function Login() {
                 validate();
               }}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
           <div className="options">
             <label>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               Remember me
             </label>
 

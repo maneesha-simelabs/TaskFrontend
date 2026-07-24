@@ -11,7 +11,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/Login");
   };
   return (
     <div className="navbar">

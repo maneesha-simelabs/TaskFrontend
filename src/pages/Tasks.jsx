@@ -18,32 +18,58 @@ export default function Tasks({}) {
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [needReload, setNeedReload] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const { user } = useContext(AuthContext);
   const currentUser = user?.data?.user || user?.user || user;
   const isAdmin = currentUser?.role === "Admin";
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [curPage, setCurPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchTasks = async () => {
+      setLoading(true);
+      setError("");
+
       try {
-        let tasks, users, categories;
+        let nextTasks = [];
+        let nextUsers = [];
+        let nextCategories = [];
+        let nextTotalPages = 1;
+
         if (isAdmin) {
-          tasks = await getTasks();
-          users = await getUsers();
-          setUsers(users);
-          categories = await getCategories();
-          setCategories(categories);
-        } else tasks = await getMyTasks();
-        setTasks(tasks);
+          const res = await getTasks(curPage, controller.signal);
+          nextTasks = res?.tasks ?? [];
+          nextTotalPages = res?.pagination?.totalPages ?? 1;
+
+          nextUsers = await getUsers(controller.signal).catch(() => []);
+          nextCategories = await getCategories(controller.signal).catch(() => []);
+        } else {
+          nextTasks = await getMyTasks(controller.signal).catch(() => []);
+        }
+
+        setTasks(nextTasks);
+        setUsers(nextUsers);
+        setCategories(nextCategories);
+        setTotalPages(nextTotalPages);
         setNeedReload(false);
-      } catch (error) {
-        console.error(error);
+        setError("");
+      } catch (err) {
+        console.error(err);
+        setTasks([]);
+        setError("Unable to load tasks right now.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchTasks();
-  }, [needReload]);
+
+    return () => controller.abort();
+  }, [needReload, curPage, currentUser?.role]);
 
   const handleAdd = () => {
     setSelectedTask(null);
@@ -76,11 +102,18 @@ export default function Tasks({}) {
         <h2>Tasks</h2>
         {isAdmin && (
           <div style={{ textAlign: "right" }}>
-            <button onClick={handleAdd}>Add Task</button>
+            <button onClick={handleAdd} className="btn-primary">
+              Add Task
+            </button>
           </div>
         )}
       </div>
-      <div className="user-grid">
+      {loading && <p>Loading tasks...</p>}
+      {error && <p className="error">{error}</p>}
+      <div className="users-grid">
+        {!loading && !error && tasks?.length === 0 && (
+          <p>No tasks available.</p>
+        )}
         {tasks?.map((task) => (
           <article className="user-card" key={task._id}>
             <h3>{task.title}</h3>
@@ -98,20 +131,40 @@ export default function Tasks({}) {
               <br></br>
               Assigned To: {task?.assignedTo?.name}
             </span>
-            <div className="task-actions">
-              <button className="edit-btn" onClick={() => handleEdit(task)}>
-                <FaEdit />
-              </button>
+            {isAdmin && (
+              <div className="task-actions">
+                <button className="edit-btn" onClick={() => handleEdit(task)}>
+                  <FaEdit />
+                </button>
 
-              <button className="delete-btn" onClick={() => handleEdit(task)}>
-                <FaTrash />
-              </button>
-            </div>
+                <button className="delete-btn" onClick={() => handleEdit(task)}>
+                  <FaTrash />
+                </button>
+              </div>
+            )}
 
             {/* <button className="view-btn">View Profile</button> */}
           </article>
         ))}
       </div>
+      {!loading && totalPages > 1 && (
+        <div>
+          <button
+            onClick={() => setCurPage((p) => p - 1)}
+            disabled={curPage === 1}
+            className="btn-secondary"
+          >
+            Prev
+          </button>
+          <button
+            onClick={() => setCurPage((p) => p + 1)}
+            disabled={curPage === totalPages}
+            className="btn-secondary"
+          >
+            Next
+          </button>
+        </div>
+      )}
       <TaskModal
         isOpen={open}
         users={users}

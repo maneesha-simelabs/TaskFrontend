@@ -6,9 +6,10 @@ import { getUsers } from "../services/axios";
 export default function Users({}) {
   const [users, setUsers] = useState([]);
   useEffect(() => {
+    const controller = new AbortController();
     const fetchUsers = async () => {
       try {
-        const results = await getUsers();
+        const results = await getUsers(controller.signal);
         setUsers(results);
       } catch (error) {
         console.error(error);

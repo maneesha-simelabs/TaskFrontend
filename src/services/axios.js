@@ -1,5 +1,9 @@
 import axios from "axios";
-import { getRawTokenFromStorage, isTokenExpired } from "../utils/token";
+import {
+  getRawTokenFromStorage,
+  getRefreshTokenFromStorage,
+  isTokenExpired,
+} from "../utils/token";
 import { getApiErrorMessage } from "../utils/errorHandler";
 
 const api = axios.create({
@@ -145,25 +149,66 @@ export const myProfile = async () => {
   return unwrapResponseData(result);
 };
 
-export async function getUsers() {
-  const response = await api.get(`/users`);
+const normalizeTaskPayload = (payload) => {
+  if (Array.isArray(payload)) {
+    return { tasks: payload, pagination: null };
+  }
+
+  const data = payload?.data ?? payload;
+
+  if (Array.isArray(data)) {
+    return { tasks: data, pagination: null };
+  }
+
+  if (Array.isArray(data?.tasks)) {
+    return { tasks: data.tasks, pagination: data.pagination ?? null };
+  }
+
+  if (Array.isArray(data?.data)) {
+    return { tasks: data.data, pagination: data.pagination ?? null };
+  }
+
+  if (Array.isArray(data?.items)) {
+    return { tasks: data.items, pagination: data.pagination ?? null };
+  }
+
+  return { tasks: [], pagination: null };
+};
+
+export async function getUsers(signal) {
+  const response = await api.get(`/users`, { signal });
   const payload = unwrapResponseData(response);
 
-  return payload?.users;
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.users)) return payload.users;
+  if (Array.isArray(payload?.data?.users)) return payload.data.users;
+  if (Array.isArray(payload?.data)) return payload.data;
+
+  return [];
 }
 
-export async function getTasks() {
-  const response = await api.get(`/tasks`);
+export async function getTasks(page, signal) {
+  const response = await api.get(`/tasks?page=${page}`, { signal });
   const payload = unwrapResponseData(response);
 
-  return payload?.tasks;
+  if (Array.isArray(payload)) return { tasks: payload, pagination: null };
+  if (Array.isArray(payload?.tasks)) return { tasks: payload.tasks, pagination: payload.pagination ?? null };
+  if (Array.isArray(payload?.data?.tasks)) return { tasks: payload.data.tasks, pagination: payload.data.pagination ?? null };
+  if (Array.isArray(payload?.data)) return { tasks: payload.data, pagination: null };
+
+  return { tasks: [], pagination: null };
 }
 
-export async function getMyTasks() {
-  const response = await api.get(`/tasks/me`);
+export async function getMyTasks(signal) {
+  const response = await api.get(`/tasks/me`, { signal });
   const payload = unwrapResponseData(response);
 
-  return payload?.tasks;
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.tasks)) return payload.tasks;
+  if (Array.isArray(payload?.data?.tasks)) return payload.data.tasks;
+  if (Array.isArray(payload?.data)) return payload.data;
+
+  return [];
 }
 
 export async function createTask(task) {
@@ -196,7 +241,7 @@ export async function getCategories() {
 }
 
 export async function refreshAccessToken() {
-  const refreshToken = localStorage.getItem("refreshToken");
+  const refreshToken = getRefreshTokenFromStorage();
 
   if (!refreshToken) return null;
 
@@ -205,10 +250,21 @@ export async function refreshAccessToken() {
   });
 
   const payload = unwrapResponseData(res);
+  const accessToken = payload?.accessToken;
 
-  localStorage.setItem("accessToken", payload.accessToken);
+  if (accessToken) {
+    const rememberMe = localStorage.getItem("rememberMe") === "true";
+    const storageKey = rememberMe ? "accessToken" : "accessToken";
+    if (rememberMe) {
+      localStorage.setItem(storageKey, accessToken);
+      sessionStorage.removeItem(storageKey);
+    } else {
+      sessionStorage.setItem(storageKey, accessToken);
+      localStorage.removeItem(storageKey);
+    }
+  }
 
-  return payload.accessToken;
+  return accessToken;
 }
 
 // export async function refreshAccessToken() {

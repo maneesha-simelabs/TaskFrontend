@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -9,34 +9,45 @@ import ProtectedRoutes from "./Router/ProtectedRoutes";
 import Tasks from "./pages/Tasks";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
+import ErrorBoundary from "./errorHandlers/ErrorBoundary";
+
+const users = lazy(() => import("./pages/Users"));
+const tasks = lazy(() => import("./pages/Tasks"));
+const resetPassword = lazy(() => import("./pages/ResetPassword"));
+const forgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
 function AppRouter() {
+  const routeFallback = <div>Loading page structure...</div>;
   return (
     <div>
-      <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<RootLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route
-            path="users"
-            element={<ProtectedRoutes>{<Users />}</ProtectedRoutes>}
-          />
-          <Route
-            path="tasks"
-            element={<ProtectedRoutes>{<Tasks />}</ProtectedRoutes>}
-          />
-        </Route>
-        <Route
-          path="/forgotPassword"
-          element={<ForgotPassword></ForgotPassword>}
-        ></Route>
-        <Route
-          path="/reset-password"
-          element={<ResetPassword></ResetPassword>}
-        ></Route>
-        <Route path="*" element={<Navigate to="/home" replace />} />
-      </Routes>
+      <ErrorBoundary>
+        <Suspense fallback={routeFallback}>
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<RootLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route
+                path="users"
+                element={<ProtectedRoutes>{<Users />}</ProtectedRoutes>}
+              />
+              <Route
+                path="tasks"
+                element={<ProtectedRoutes>{<Tasks />}</ProtectedRoutes>}
+              />
+            </Route>
+            <Route
+              path="/forgotPassword"
+              element={<ForgotPassword></ForgotPassword>}
+            ></Route>
+            <Route
+              path="/reset-password"
+              element={<ResetPassword></ResetPassword>}
+            ></Route>
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }

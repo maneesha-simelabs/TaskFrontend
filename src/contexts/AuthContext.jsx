@@ -1,6 +1,12 @@
 import { createContext, useState, useEffect } from "react";
 import { userLogin, myProfile, refreshAccessToken } from "../services/axios";
-import { getRawTokenFromStorage, isTokenExpired } from "../utils/token";
+import {
+  clearStoredAuthValues,
+  getRawTokenFromStorage,
+  getRefreshTokenFromStorage,
+  isTokenExpired,
+  setStoredAuthValue,
+} from "../utils/token";
 
 export const AuthContext = createContext(null);
 
@@ -16,27 +22,27 @@ export const AuthProvider = ({ children }) => {
     const token = getRawTokenFromStorage();
 
     if (!token) {
+      setUser(null);
       setAuthReady(true);
       return;
     }
 
-    if (isTokenExpired(token)) {
-      const refreshedToken = await refreshAccessToken();
-
-      if (!refreshedToken) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        setUser(null);
-        setAuthReady(true);
-        return;
-      }
-    }
-
     try {
+      if (isTokenExpired(token)) {
+        const refreshedToken = await refreshAccessToken();
+
+        if (!refreshedToken) {
+          clearStoredAuthValues();
+          setUser(null);
+          setAuthReady(true);
+          return;
+        }
+      }
+
       const result = await myProfile();
       const payload = result?.data ?? result;
       const userData = payload?.user ?? payload;
-      setUser(userData);
+      setUser(userData ?? null);
     } catch (error) {
       console.error("Failed to fetch profile:", error);
 
@@ -48,7 +54,7 @@ export const AuthProvider = ({ children }) => {
             const result = await myProfile();
             const payload = result?.data ?? result;
             const userData = payload?.user ?? payload;
-            setUser(userData);
+            setUser(userData ?? null);
             setAuthReady(true);
             return;
           } catch (retryError) {
@@ -57,8 +63,7 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      clearStoredAuthValues();
       setUser(null);
     } finally {
       setAuthReady(true);
@@ -76,18 +81,30 @@ export const AuthProvider = ({ children }) => {
       const accessToken = payload?.accessToken || payload?.token;
       const refreshToken = payload?.refreshToken || payload?.user?.refreshToken;
       const userData = payload?.user ?? payload;
+      const rememberMe = Boolean(credentials?.rememberMe);
 
       if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
+        setStoredAuthValue("accessToken", accessToken, rememberMe);
       }
 
       if (refreshToken) {
-        localStorage.setItem("refreshToken", refreshToken);
+        setStoredAuthValue("refreshToken", refreshToken, rememberMe);
       }
 
       if (userData) {
-        localStorage.setItem("taskmanagement_user", JSON.stringify(userData));
+        if (rememberMe) {
+          localStorage.setItem("taskmanagement_user", JSON.stringify(userData));
+          sessionStorage.removeItem("taskmanagement_user");
+        } else {
+          sessionStorage.setItem(
+            "taskmanagement_user",
+            JSON.stringify(userData),
+          );
+          localStorage.removeItem("taskmanagement_user");
+        }
       }
+
+      localStorage.setItem("rememberMe", rememberMe ? "true" : "false");
 
       setUser(userData ?? null);
       return payload;
@@ -97,9 +114,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("taskmanagement_user");
+    clearStoredAuthValues();
     setUser(null);
   };
 

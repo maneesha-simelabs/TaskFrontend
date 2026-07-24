@@ -1,6 +1,11 @@
-export function getRawTokenFromStorage() {
-  const raw = localStorage.getItem("accessToken");
+function readStoredValue(key) {
+  const sessionValue = sessionStorage.getItem(key);
+  if (sessionValue) return sessionValue;
 
+  return localStorage.getItem(key);
+}
+
+function normalizeStoredToken(raw) {
   if (!raw) return null;
 
   try {
@@ -11,6 +16,35 @@ export function getRawTokenFromStorage() {
   } catch (e) {}
 
   return raw;
+}
+
+export function getRawTokenFromStorage() {
+  return normalizeStoredToken(readStoredValue("accessToken"));
+}
+
+export function getRefreshTokenFromStorage() {
+  return normalizeStoredToken(readStoredValue("refreshToken"));
+}
+
+export function setStoredAuthValue(key, value, rememberMe) {
+  if (rememberMe) {
+    localStorage.setItem(key, value);
+    sessionStorage.removeItem(key);
+    return;
+  }
+
+  sessionStorage.setItem(key, value);
+  localStorage.removeItem(key);
+}
+
+export function clearStoredAuthValues() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("taskmanagement_user");
+  localStorage.removeItem("rememberMe");
+  sessionStorage.removeItem("accessToken");
+  sessionStorage.removeItem("refreshToken");
+  sessionStorage.removeItem("taskmanagement_user");
 }
 
 export function isTokenExpired(tokenOrStored) {

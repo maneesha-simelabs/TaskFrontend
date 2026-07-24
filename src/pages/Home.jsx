@@ -1,9 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import { FaTasks, FaUsers, FaChartLine, FaCalendarAlt } from "react-icons/fa";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { authReady } = useContext(AuthContext);
+
+  // useEffect(() => {
+  //   // Check both storages to see if the user is already authenticated
+  //   const token =
+  //     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+
+  //   if (token) {
+  //     // Validate token with backend and log the user into the React application context
+  //     // setAuthUser(token);
+  //   }
+  // }, []);
+
   return (
     <>
       <section className="hero">
@@ -23,14 +38,26 @@ export default function Home() {
           <div className="hero-buttons">
             <button className="btn-primary">Get Started</button>
 
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Login
-            </button>
+            {authReady && (
+              <button
+                className="btn-secondary"
+                onClick={() => {
+                  navigate("/tasks");
+                }}
+              >
+                Tasks
+              </button>
+            )}
+            {!authReady && (
+              <button
+                className="btn-secondary"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Login
+              </button>
+            )}
           </div>
 
           <div className="hero-stats">
