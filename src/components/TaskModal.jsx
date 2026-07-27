@@ -89,11 +89,17 @@ export default function TaskModal({
     const newErrors = {};
 
     newErrors.title = validateRequired(currentForm.title, "Title");
-    newErrors.description = validateRequired(currentForm.description, "Description");
+    newErrors.description = validateRequired(
+      currentForm.description,
+      "Description",
+    );
     newErrors.category = validateRequired(currentForm.category, "Category");
     newErrors.priority = validateRequired(currentForm.priority, "Priority");
     newErrors.status = validateRequired(currentForm.status, "Status");
-    newErrors.assignedTo = validateRequired(currentForm.assignedTo, "Assigned To");
+    newErrors.assignedTo = validateRequired(
+      currentForm.assignedTo,
+      "Assigned To",
+    );
     newErrors.dueDate = validateRequired(currentForm.dueDate, "Due date");
 
     // Remove empty errors
