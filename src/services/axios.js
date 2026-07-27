@@ -241,7 +241,7 @@ export async function updateTask(task) {
 }
 
 export async function deleteTask(id) {
-  const result = await api.delete(`/tasks/${id}`, {
+  const result = await api.delete(`/tasks`, {
     headers: {
       Authorization: `Bearer ${getRawTokenFromStorage()}`,
     },

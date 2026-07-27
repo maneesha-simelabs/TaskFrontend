@@ -3,6 +3,7 @@ import "../css/Home.css";
 import { FaTasks, FaUsers, FaChartLine, FaCalendarAlt } from "react-icons/fa";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import Button from "../components/Button";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -36,27 +37,27 @@ export default function Home() {
           </p>
 
           <div className="hero-buttons">
-            <button className="btn-primary">Get Started</button>
+            <Button className="btn-primary">Get Started</Button>
 
             {authReady && (
-              <button
+              <Button
                 className="btn-secondary"
                 onClick={() => {
                   navigate("/tasks");
                 }}
               >
                 Tasks
-              </button>
+              </Button>
             )}
             {!authReady && (
-              <button
+              <Button
                 className="btn-secondary"
                 onClick={() => {
                   navigate("/login");
                 }}
               >
                 Login
-              </button>
+              </Button>
             )}
           </div>
 

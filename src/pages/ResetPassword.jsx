@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import "../css/Password.css";
 import { resetPassword } from "../services/axios";
+import Button from "../components/Button";
 
 export default function ResetPassword() {
   const location = useLocation();
@@ -88,12 +89,12 @@ export default function ResetPassword() {
               }
             />
 
-            <button
+            <Button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            </Button>
           </div>
 
           <label>Confirm Password</label>
@@ -110,14 +111,14 @@ export default function ResetPassword() {
               }
             />
 
-            <button type="button" onClick={() => setShowConfirm(!showConfirm)}>
+            <Button type="button" onClick={() => setShowConfirm(!showConfirm)}>
               {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            </Button>
           </div>
 
           {error && <p className="error">{error}</p>}
 
-          <button className="btn-primary">Reset Password</button>
+          <Button className="btn-primary">Reset Password</Button>
         </form>
       </div>
     </div>

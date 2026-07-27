@@ -3,6 +3,7 @@ import "../css/Users.css";
 import { useEffect } from "react";
 import { getUsers } from "../services/axios";
 import Card from "../components/Card";
+import Button from "../components/Button";
 
 export default function Users({}) {
   const [users, setUsers] = useState([]);
@@ -31,9 +32,9 @@ export default function Users({}) {
             className="cd-card"
             title={user.name}
             actions={[
-              <button key="view" className="view-btn">
+              <Button key="view" className="view-btn">
                 View Profile
-              </button>,
+              </Button>,
             ]}
           >
             <p>{user.email}</p>

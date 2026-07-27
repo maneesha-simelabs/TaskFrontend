@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "../css/TaskModal.css";
 import "../css/Login.css";
+import Button from "./Button";
+import Input from "./Input";
 
 const initialForm = {
   title: "",
@@ -121,33 +123,31 @@ export default function TaskModal({
             {initialData ? "Edit Task" : "Add Task"}
           </div>
 
-          <button onClick={onClose} className="close-btn">
+          <Button type="button" onClick={onClose} className="close-btn">
             ✕
-          </button>
+          </Button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label>
-            Title<span className="required-star">*</span>
-          </label>
-
-          <input
+          <Input
+            label="Title"
             name="title"
             value={form.title}
+            required
             onChange={handleChange}
+            error={errors.title}
             className={errors.title ? "error-input" : ""}
           />
 
-          <label>
-            Description<span className="required-star">*</span>
-          </label>
-
-          <textarea
-            rows="4"
+          <Input
+            label="Description"
             name="description"
             value={form.description}
-            className={errors.description ? "error-input" : ""}
+            required
             onChange={handleChange}
+            error={errors.description}
+            className={errors.description ? "error-input" : ""}
+            type="textarea"
           />
 
           <label>
@@ -230,13 +230,13 @@ export default function TaskModal({
           </select>
           {hasError && <p className="error">Please fill required fields!!</p>}
           <div className="actions modal-footer">
-            <button type="button" className="cancel" onClick={onClose}>
+            <Button type="button" className="cancel" onClick={onClose}>
               Cancel
-            </button>
+            </Button>
 
-            <button className="save" disabled={hasError}>
+            <Button type="submit" className="save" disabled={hasError}>
               {initialData ? "Update" : "Create"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import "../css/DeleteModal.css";
+import Button from "./Button";
 
 function DeleteModal({
   isDeleteModalOpen,
@@ -29,12 +30,12 @@ function DeleteModal({
         </p>
 
         <div className="actions">
-          <button type="button" onClick={onClose}>
+          <Button type="button" onClick={onClose}>
             Cancel
-          </button>
-          <button type="button" className="delete" onClick={onConfirm}>
+          </Button>
+          <Button type="button" className="delete" onClick={onConfirm}>
             Delete
-          </button>
+          </Button>
         </div>
       </div>
     </div>

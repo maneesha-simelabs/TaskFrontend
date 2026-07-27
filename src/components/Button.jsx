@@ -1,20 +1,16 @@
 import React from "react";
 
-function Button(text, type, onClick) {
-  //ariaLabelOptions, ariaLabelCondition
+function Button({ children, type = "button", className, onClick, disabled, ...props }) {
   return (
-    <div>
-      <button
-        type={type}
-        onClick={onclick}
-        // aria-label={
-        //   ariaLabelCondition ? ariaLabelOptions[0] : ariaLabelOptions[1]
-        // }
-        // aria-label={showPassword ? "Hide password" : "Show password"}
-      >
-        {text}
-      </button>
-    </div>
+    <button
+      type={type}
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
   );
 }
 

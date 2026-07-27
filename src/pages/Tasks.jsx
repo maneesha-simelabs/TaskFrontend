@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
 import "../css/Users.css";
 import { useEffect, useContext } from "react";
 import {
@@ -15,6 +15,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Card from "../components/Card";
 import DeleteModal from "../components/DeleteModal";
+import Button from "../components/Button";
 
 export default function Tasks({}) {
   const [tasks, setTasks] = useState([]);
@@ -23,6 +24,7 @@ export default function Tasks({}) {
   const [selectedTask, setSelectedTask] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isAuthReady, setIsAuthReady] = useState(false);
   const [error, setError] = useState("");
   const { user } = useContext(AuthContext);
   const currentUser = user?.data?.user || user?.user || user;
@@ -32,7 +34,18 @@ export default function Tasks({}) {
   const [curPage, setCurPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  useLayoutEffect(() => {
+    if (!currentUser) {
+      setIsAuthReady(false);
+      return;
+    }
+
+    setIsAuthReady(true);
+  }, [currentUser]);
+
   useEffect(() => {
+    if (!isAuthReady) return;
+
     const controller = new AbortController();
     const fetchUsers = async () => {
       try {
@@ -55,9 +68,11 @@ export default function Tasks({}) {
     fetchUsers();
 
     return () => controller.abort();
-  }, [currentUser?.role]);
+  }, [isAuthReady, currentUser?.role]);
 
   useEffect(() => {
+    if (!isAuthReady) return;
+
     const controller = new AbortController();
     const fetchTasks = async () => {
       setLoading(true);
@@ -91,7 +106,7 @@ export default function Tasks({}) {
     fetchTasks();
 
     return () => controller.abort();
-  }, [reloadKey, curPage, currentUser?.role]);
+  }, [isAuthReady, reloadKey, curPage, currentUser?.role]);
 
   const handleAdd = () => {
     setSelectedTask(null);
@@ -131,9 +146,15 @@ export default function Tasks({}) {
         console.log("Update Task", taskData);
         const taskToSave = { ...taskData, id: selectedTask._id };
         await updateTask(taskToSave);
+        // setTasks((prev) =>
+        //   prev.map((task) =>
+        //     task._id === updatedTask._id ? updatedTask : task,
+        //   ),
+        // );
       } else {
         console.log("Create Task", taskData);
-        await createTask(taskData);
+        const newTask = await createTask(taskData);
+        setTasks((prev) => [...prev, newTask]);
       }
 
       triggerReload();
@@ -149,15 +170,17 @@ export default function Tasks({}) {
         <h2>Tasks</h2>
         {isAdmin && (
           <div style={{ textAlign: "right" }}>
-            <button onClick={handleAdd} className="btn-primary">
+            <Button onClick={handleAdd} className="btn-primary">
               Add Task
-            </button>
+            </Button>
           </div>
         )}
       </div>
-      {loading && <p>Loading tasks...</p>}
-      {error && <p className="error">{error}</p>}
-      <div className="users-grid">
+      <div className="users-grid" style={{ minHeight: "180px" }}>
+        {!isAuthReady && <p>Preparing your tasks...</p>}
+        {isAuthReady && loading && <p>Loading tasks...</p>}
+        {error && <p className="error">{error}</p>}
+
         {!loading && !error && tasks?.length === 0 && (
           <p>No tasks available.</p>
         )}
@@ -170,20 +193,20 @@ export default function Tasks({}) {
             actions={
               isAdmin
                 ? [
-                    <button
+                    <Button
                       key="edit"
                       onClick={() => handleEdit(task)}
                       className="edit-btn"
                     >
                       ✏️
-                    </button>,
-                    <button
+                    </Button>,
+                    <Button
                       key="delete"
                       onClick={() => handleDelete(task)}
                       className="delete-btn"
                     >
                       🗑️
-                    </button>,
+                    </Button>,
                   ]
                 : null
             }
@@ -238,20 +261,20 @@ export default function Tasks({}) {
       </div>
       {!loading && totalPages > 1 && (
         <div>
-          <button
+          <Button
             onClick={() => setCurPage((p) => p - 1)}
             disabled={curPage === 1}
             className="btn-secondary"
           >
             Prev
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setCurPage((p) => p + 1)}
             disabled={curPage === totalPages}
             className="btn-secondary"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
       <TaskModal

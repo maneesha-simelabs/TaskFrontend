@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 // import "./auth.css";
 import { forgotPassword } from "../services/axios";
 import "../css/Password.css";
+import Button from "../components/Button";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -49,7 +50,7 @@ export default function ForgotPassword() {
           {error && <p className="error">{error}</p>}
           {message && <p className="success">{message}</p>}
 
-          <button className="btn-primary">Send Reset Link</button>
+          <Button className="btn-primary">Send Reset Link</Button>
         </form>
 
         <Link to="/login" className="back-link">

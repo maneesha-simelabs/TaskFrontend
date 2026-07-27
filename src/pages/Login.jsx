@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import "../css/Login.css";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import Button from "../components/Button";
 
 function Login() {
   const navigate = useNavigate();
@@ -121,12 +122,12 @@ function Login() {
                 validate();
               }}
             />
-            <button
+            <Button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            </Button>
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
@@ -140,14 +141,14 @@ function Login() {
               Remember me
             </label>
 
-            <button type="button" onClick={handleClick}>
+            <Button type="button" onClick={handleClick}>
               Forgot Password?
-            </button>
+            </Button>
           </div>
           {errors.submit && <p className="error">{errors.submit}</p>}
-          <button type="submit" className="login-btn">
+          <Button type="submit" className="login-btn">
             Login
-          </button>
+          </Button>
 
           {/* <button type="button" className="google-btn">
             Continue with Google
