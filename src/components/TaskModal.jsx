@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "../css/TaskModal.css";
+import "../css/Login.css";
 
 const initialForm = {
   title: "",
@@ -20,6 +21,8 @@ export default function TaskModal({
   initialData,
 }) {
   const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState({});
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -55,18 +58,53 @@ export default function TaskModal({
   if (!isOpen) return null;
 
   const handleChange = (e) => {
-    setForm({
+    const nextForm = {
       ...form,
       [e.target.name]: e.target.value,
-    });
+    };
+
+    setForm(nextForm);
+    validate(nextForm);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    onSave(form);
+    const isValid = validate(form);
+    if (!isValid) {
+      setHasError(true);
+      return;
+    }
 
+    setHasError(false);
+    onSave(form);
     onClose();
+  };
+
+  const validateRequired = (value, fieldName) => {
+    return value?.trim() ? "" : `${fieldName} is `;
+  };
+
+  const validate = (currentForm = form) => {
+    const newErrors = {};
+
+    newErrors.title = validateRequired(currentForm.title, "Title");
+    newErrors.description = validateRequired(currentForm.description, "Description");
+    newErrors.category = validateRequired(currentForm.category, "Category");
+    newErrors.priority = validateRequired(currentForm.priority, "Priority");
+    newErrors.status = validateRequired(currentForm.status, "Status");
+    newErrors.assignedTo = validateRequired(currentForm.assignedTo, "Assigned To");
+    newErrors.dueDate = validateRequired(currentForm.dueDate, "Due date");
+
+    // Remove empty errors
+    Object.keys(newErrors).forEach((key) => {
+      if (!newErrors[key]) delete newErrors[key];
+    });
+
+    setErrors(newErrors);
+    const hasError = Object.keys(newErrors).length !== 0;
+    setHasError(hasError);
+    return !hasError;
   };
 
   return (
@@ -83,36 +121,57 @@ export default function TaskModal({
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label>Title</label>
+          <label>
+            Title<span className="required-star">*</span>
+          </label>
 
           <input
             name="title"
             value={form.title}
             onChange={handleChange}
-            required
+            className={errors.title ? "error-input" : ""}
           />
 
-          <label>Description</label>
+          <label>
+            Description<span className="required-star">*</span>
+          </label>
 
           <textarea
             rows="4"
             name="description"
             value={form.description}
+            className={errors.description ? "error-input" : ""}
             onChange={handleChange}
           />
 
-          <label>Priority</label>
+          <label>
+            Priority<span className="required-star">*</span>
+          </label>
 
-          <select name="priority" value={form.priority} onChange={handleChange}>
+          <select
+            name="priority"
+            value={form.priority}
+            onChange={handleChange}
+            className={errors.priority ? "error-input" : ""}
+          >
             <option>High</option>
             <option>Medium</option>
             <option>Low</option>
           </select>
 
-          <label>Status</label>
+          <label>
+            Status<span className="required-star">*</span>
+          </label>
 
-          <select name="status" value={form.status} onChange={handleChange}>
-            <option>Todo</option>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+            className={errors.status ? "error-input" : ""}
+          >
+            <option>
+              Todo<span className="required-star">*</span>
+            </option>
             <option>In Progress</option>
             <option>Completed</option>
           </select>
@@ -123,13 +182,17 @@ export default function TaskModal({
             type="date"
             name="dueDate"
             value={form.dueDate}
+            className={errors.dueDate ? "error-input" : ""}
             onChange={handleChange}
           />
-          <label>Assign To</label>
+          <label>
+            Assign To<span className="required-star">*</span>
+          </label>
 
           <select
             name="assignedTo"
             value={form.assignedTo}
+            className={errors.assignedTo ? "error-input" : ""}
             onChange={handleChange}
           >
             <option value="">Select User</option>
@@ -141,9 +204,16 @@ export default function TaskModal({
             ))}
           </select>
 
-          <label>Category</label>
+          <label>
+            Category<span className="required-star">*</span>
+          </label>
 
-          <select name="category" value={form.category} onChange={handleChange}>
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className={errors.category ? "error-input" : ""}
+          >
             <option value="">Select Category</option>
 
             {categories.map((c) => (
@@ -152,13 +222,13 @@ export default function TaskModal({
               </option>
             ))}
           </select>
-
+          {hasError && <p className="error">Please fill required fields!!</p>}
           <div className="actions modal-footer">
             <button type="button" className="cancel" onClick={onClose}>
               Cancel
             </button>
 
-            <button className="save">
+            <button className="save" disabled={hasError}>
               {initialData ? "Update" : "Create"}
             </button>
           </div>

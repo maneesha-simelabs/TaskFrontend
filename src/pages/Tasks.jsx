@@ -21,7 +21,7 @@ export default function Tasks({}) {
   const [open, setOpen] = useState(false);
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [needReload, setNeedReload] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { user } = useContext(AuthContext);
@@ -34,14 +34,37 @@ export default function Tasks({}) {
 
   useEffect(() => {
     const controller = new AbortController();
+    const fetchUsers = async () => {
+      try {
+        let nUsers = [];
+        let nCategories = [];
+
+        if (isAdmin) {
+          nUsers = await getUsers(controller.signal).catch(() => []);
+          nCategories = await getCategories(controller.signal).catch(() => []);
+        }
+
+        setUsers(nUsers);
+        setCategories(nCategories);
+      } catch (err) {
+        console.error(err);
+        setError("Unable to load data right now.");
+      }
+    };
+
+    fetchUsers();
+
+    return () => controller.abort();
+  }, [currentUser?.role]);
+
+  useEffect(() => {
+    const controller = new AbortController();
     const fetchTasks = async () => {
       setLoading(true);
       setError("");
 
       try {
         let nTasks = [];
-        let nUsers = [];
-        let nCategories = [];
         let nTotalPages = 1;
 
         if (isAdmin) {
@@ -49,19 +72,12 @@ export default function Tasks({}) {
           nTasks = res?.tasks ?? [];
           nTotalPages = res?.pagination?.totalPages ?? 1;
           setTotalPages(nTotalPages);
-          nUsers = await getUsers(controller.signal).catch(() => []);
-          nCategories = await getCategories(controller.signal).catch(
-            () => [],
-          );
         } else {
           nTasks = await getMyTasks(controller.signal).catch(() => []);
         }
 
         setTasks(nTasks);
-        setUsers(nUsers);
-        setCategories(nCategories);
         setTotalPages(nTotalPages);
-        setNeedReload(false);
         setError("");
       } catch (err) {
         console.error(err);
@@ -75,7 +91,7 @@ export default function Tasks({}) {
     fetchTasks();
 
     return () => controller.abort();
-  }, [needReload, curPage, currentUser?.role]);
+  }, [reloadKey, curPage, currentUser?.role]);
 
   const handleAdd = () => {
     setSelectedTask(null);
@@ -92,27 +108,38 @@ export default function Tasks({}) {
     setisDeleteModalOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
-    // console.log(taskid);
-    // console.log(id);
-    // console.log(selectedTask);
-    deleteTask(selectedTask._id);
-    setisDeleteModalOpen(false);
-    setSelectedTask(null);
+  const triggerReload = () => {
+    setReloadKey((prev) => prev + 1);
   };
 
-  const handleSave = async (task) => {
-    if (selectedTask) {
-      console.log("Update Task", task);
-      task = { ...task, id: selectedTask._id };
-      const result = await updateTask(task);
-      // if (result.success == true)
-      setNeedReload(true);
-      // PUT API
-    } else {
-      console.log("Create Task", task);
-      const result = await createTask(task);
-      if (result.success == true) setNeedReload(true);
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteTask(selectedTask._id);
+      triggerReload();
+    } catch (err) {
+      console.error(err);
+      setError("Unable to delete task right now.");
+    } finally {
+      setisDeleteModalOpen(false);
+      setSelectedTask(null);
+    }
+  };
+
+  const handleSave = async (taskData) => {
+    try {
+      if (selectedTask) {
+        console.log("Update Task", taskData);
+        const taskToSave = { ...taskData, id: selectedTask._id };
+        await updateTask(taskToSave);
+      } else {
+        console.log("Create Task", taskData);
+        await createTask(taskData);
+      }
+
+      triggerReload();
+    } catch (err) {
+      console.error(err);
+      setError("Unable to save task right now.");
     }
   };
 

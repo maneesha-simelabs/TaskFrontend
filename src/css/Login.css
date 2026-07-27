@@ -268,10 +268,19 @@ body {
 }
 
 input.error-input {
-  border-color: #dc2626;
+  border-color: #dc2626 !important;
 }
 
 input.error-input:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.error-input {
+  border-color: #dc2626 !important;
+}
+
+.error-input:focus {
   border-color: #dc2626;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
 }
