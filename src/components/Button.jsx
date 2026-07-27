@@ -1,6 +1,13 @@
 import React from "react";
 
-function Button({ children, type = "button", className, onClick, disabled, ...props }) {
+function Button({
+  children,
+  type = "button",
+  className,
+  onClick,
+  disabled,
+  ...props
+}) {
   return (
     <button
       type={type}
