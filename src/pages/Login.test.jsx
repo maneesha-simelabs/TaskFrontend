@@ -1,46 +1,71 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import Login from "./Login";
-import Button from "../components/Button";
 import { AuthProvider } from "../contexts/AuthContext";
-import userEvent from "@testing-library/user-event";
+import useAuth from "../hooks/useAuth";
 
-test("renders login form", () => {
-  render(
-    <MemoryRouter>
-      <AuthProvider>
-        <Login />
-      </AuthProvider>
-    </MemoryRouter>,
-  );
+jest.mock("../hooks/useAuth", () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
-  expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
-});
+describe("Login", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-test("user types email", async () => {
-  render(
-    <MemoryRouter>
-      <AuthProvider>
-        <Login />
-      </AuthProvider>
-    </MemoryRouter>,
-  );
+  test("renders login form", () => {
+    useAuth.mockReturnValue({ login: jest.fn() });
 
-  const email = screen.getByPlaceholderText(/email/i);
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
 
-  await userEvent.type(email, "abc@gmail.com");
+    expect(screen.getByText(/welcome back/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/enter your email/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/enter password/i)).toBeInTheDocument();
+  });
 
-  expect(email).toHaveValue("abc@gmail.com");
-});
+  test("user types into login form", async () => {
+    useAuth.mockReturnValue({ login: jest.fn() });
 
-test("button clicks", async () => {
-  const login = jest.fn();
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
 
-  render(<Button onClick={login}>Login</Button>);
+    const emailInput = screen.getByPlaceholderText(/enter your email/i);
+    const passwordInput = screen.getByPlaceholderText(/enter password/i);
 
-  const button = screen.getByRole("button", { name: /login/i });
+    await userEvent.type(emailInput, "user@example.com");
+    await userEvent.type(passwordInput, "secret123");
 
-  await userEvent.click(button);
+    expect(emailInput).toHaveValue("user@example.com");
+    expect(passwordInput).toHaveValue("secret123");
+  });
 
-  expect(login).toHaveBeenCalledTimes(1);
+  test("login validation", async () => {
+    useAuth.mockReturnValue({ login: jest.fn() });
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
+      </MemoryRouter>,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: /login/i }));
+
+    expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
+    expect(screen.getByText(/password is required/i)).toBeInTheDocument();
+  });
 });

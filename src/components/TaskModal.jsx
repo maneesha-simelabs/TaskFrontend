@@ -150,11 +150,12 @@ export default function TaskModal({
             type="textarea"
           />
 
-          <label>
+          <label htmlFor="priority">
             Priority<span className="required-star">*</span>
           </label>
 
           <select
+            id="priority"
             name="priority"
             value={form.priority}
             onChange={handleChange}
@@ -165,21 +166,20 @@ export default function TaskModal({
             <option>Low</option>
           </select>
 
-          <label>
+          <label htmlFor="status">
             Status<span className="required-star">*</span>
           </label>
 
           <select
+            id="status"
             name="status"
             value={form.status}
             onChange={handleChange}
             className={errors.status ? "error-input" : ""}
           >
-            <option>
-              Todo<span className="required-star">*</span>
-            </option>
-            <option>In Progress</option>
-            <option>Completed</option>
+            <option value="Todo">Todo</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
           </select>
 
           {/* <label>Due Date</label> */}
@@ -193,11 +193,12 @@ export default function TaskModal({
             className={errors.dueDate ? "error-input" : ""}
             onChange={handleChange}
           />
-          <label>
+          <label htmlFor="assignedTo">
             Assign To<span className="required-star">*</span>
           </label>
 
           <select
+            id="assignedTo"
             name="assignedTo"
             value={form.assignedTo}
             className={errors.assignedTo ? "error-input" : ""}
@@ -212,11 +213,12 @@ export default function TaskModal({
             ))}
           </select>
 
-          <label>
+          <label htmlFor="category">
             Category<span className="required-star">*</span>
           </label>
 
           <select
+            id="category"
             name="category"
             value={form.category}
             onChange={handleChange}

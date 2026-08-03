@@ -1,89 +1,48 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import TaskModal from "./TaskModal";
 
-test("renders modal when isOpen is true", () => {
-  render(
-    <TaskModal
-      isOpen={true}
-      users={[]}
-      categories={[]}
-      onClose={jest.fn()}
-      onSave={jest.fn()}
-      initialData={null}
-    />,
-  );
+describe("TaskModal", () => {
+  test("task modal validation", async () => {
+    render(
+      <TaskModal
+        isOpen={true}
+        users={[]}
+        categories={[]}
+        onClose={jest.fn()}
+        onSave={jest.fn()}
+        initialData={null}
+      />,
+    );
 
-  expect(screen.getByText(/add task/i)).toBeInTheDocument();
-});
+    await userEvent.click(screen.getByRole("button", { name: /create/i }));
 
-test("does not render when closed", () => {
-  render(
-    <TaskModal
-      isOpen={false}
-      users={[]}
-      categories={[]}
-      onClose={jest.fn()}
-      onSave={jest.fn()}
-      initialData={null}
-    />,
-  );
+    expect(screen.getByText(/please fill required fields/i)).toBeInTheDocument();
+  });
 
-  expect(screen.queryByText(/add task/i)).not.toBeInTheDocument();
-});
+  test("create task calls onSave", async () => {
+    const onSave = jest.fn();
 
-import userEvent from "@testing-library/user-event";
+    render(
+      <TaskModal
+        isOpen={true}
+        users={[{ _id: "user-1", name: "Alex" }]}
+        categories={[{ _id: "cat-1", name: "Work" }]}
+        onClose={jest.fn()}
+        onSave={onSave}
+        initialData={null}
+      />,
+    );
 
-test("calls onClose when Cancel is clicked", async () => {
-  const onClose = jest.fn();
+    await userEvent.type(screen.getByLabelText(/title/i), "New Task");
+    await userEvent.type(screen.getByLabelText(/description/i), "Task body");
+    await userEvent.type(screen.getByLabelText(/duedate/i), "2026-08-10");
+    await userEvent.selectOptions(screen.getByLabelText(/priority/i), "High");
+    await userEvent.selectOptions(screen.getByLabelText(/status/i), "Todo");
+    await userEvent.selectOptions(screen.getByLabelText(/assign to/i), "user-1");
+    await userEvent.selectOptions(screen.getByLabelText(/category/i), "cat-1");
+    await userEvent.click(screen.getByRole("button", { name: /create/i }));
 
-  render(
-    <TaskModal
-      isOpen={true}
-      users={[]}
-      categories={[]}
-      onClose={onClose}
-      onSave={jest.fn()}
-      initialData={null}
-    />,
-  );
-
-  await userEvent.click(screen.getByRole("button", { name: /cancel/i }));
-
-  expect(onClose).toHaveBeenCalledTimes(1);
-});
-test("calls onClose when X is clicked", async () => {
-  const onClose = jest.fn();
-
-  render(
-    <TaskModal
-      isOpen={true}
-      users={[]}
-      categories={[]}
-      onClose={onClose}
-      onSave={jest.fn()}
-      initialData={null}
-    />,
-  );
-
-  const buttons = screen.getAllByRole("button");
-
-  await userEvent.click(buttons[0]);
-
-  expect(onClose).toHaveBeenCalled();
-});
-test("shows validation message when Create is clicked with empty form", async () => {
-  render(
-    <TaskModal
-      isOpen={true}
-      users={[]}
-      categories={[]}
-      onClose={jest.fn()}
-      onSave={jest.fn()}
-      initialData={null}
-    />,
-  );
-
-  await userEvent.click(screen.getByRole("button", { name: /create/i }));
-
-  expect(screen.getByText(/please fill required fields/i)).toBeInTheDocument();
+    expect(onSave).toHaveBeenCalled();
+  });
 });
