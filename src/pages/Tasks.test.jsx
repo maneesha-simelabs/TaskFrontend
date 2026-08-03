@@ -2,7 +2,12 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Tasks from "./Tasks";
 import { AuthContext } from "../contexts/AuthContext";
-import { getTasks, getUsers, getCategories, getMyTasks } from "../services/axios";
+import {
+  getTasks,
+  getUsers,
+  getCategories,
+  getMyTasks,
+} from "../services/axios";
 
 jest.mock("../services/axios", () => ({
   getTasks: jest.fn(),

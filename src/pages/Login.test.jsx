@@ -27,7 +27,9 @@ describe("Login", () => {
     );
 
     expect(screen.getByText(/welcome back/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter your email/i)).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter your email/i),
+    ).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/enter password/i)).toBeInTheDocument();
   });
 
