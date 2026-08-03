@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from "react";
+import { useState, useLayoutEffect, useCallback } from "react";
 import "../css/Users.css";
 import { useEffect, useContext } from "react";
 import {
@@ -113,15 +113,15 @@ export default function Tasks({}) {
     setOpen(true);
   };
 
-  const handleEdit = (task) => {
+  const handleEdit = useCallback((task) => {
     setSelectedTask(task);
     setOpen(true);
-  };
+  }, []);
 
-  const handleDelete = (task) => {
+  const handleDelete = useCallback((task) => {
     setSelectedTask(task);
     setisDeleteModalOpen(true);
-  };
+  }, []);
 
   const triggerReload = () => {
     setReloadKey((prev) => prev + 1);

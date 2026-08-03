@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { forgotPassword } from "../services/axios";
 import "../css/Password.css";
 import Button from "../components/Button";
+import Input from "../components/Input";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -38,9 +39,10 @@ export default function ForgotPassword() {
         <p className="subtitle">Enter your registered email address.</p>
 
         <form onSubmit={handleSubmit}>
-          <label>Email</label>
+          {/* <label>Email</label> */}
 
-          <input
+          <Input
+            label="Email"
             type="email"
             placeholder="Enter email"
             value={email}

@@ -61,7 +61,7 @@
   color: #1e293b;
 }
 
-.modal-header button {
+/* .modal-header button {
   border: none;
   background: transparent;
   font-size: 22px;
@@ -72,7 +72,7 @@
 
 .modal-header button:hover {
   color: #ef4444;
-}
+} */
 
 /* Form */
 .modal form {

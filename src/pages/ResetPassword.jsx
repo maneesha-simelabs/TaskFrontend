@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import "../css/Password.css";
 import { resetPassword } from "../services/axios";
 import Button from "../components/Button";
+import Input from "../components/Input";
 
 export default function ResetPassword() {
   const location = useLocation();
@@ -75,10 +76,11 @@ export default function ResetPassword() {
         <h2>Reset Password</h2>
 
         <form onSubmit={handleSubmit}>
-          <label>New Password</label>
+          {/* <label>New Password</label> */}
 
           <div className="password-box">
-            <input
+            <Input
+              label="New Password"
               type={showPassword ? "text" : "password"}
               value={values.password}
               onChange={(e) =>
@@ -97,10 +99,11 @@ export default function ResetPassword() {
             </Button>
           </div>
 
-          <label>Confirm Password</label>
+          {/* <label>Confirm Password</label> */}
 
           <div className="password-box">
-            <input
+            <Input
+              label="Confirm Password"
               type={showConfirm ? "text" : "password"}
               value={values.confirmPassword}
               onChange={(e) =>

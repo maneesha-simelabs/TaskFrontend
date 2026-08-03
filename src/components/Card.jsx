@@ -12,4 +12,4 @@ function Card({ title, children, actions, className }) {
   );
 }
 
-export default Card;
+export default React.memo(Card);

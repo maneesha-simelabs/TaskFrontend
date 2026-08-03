@@ -4,6 +4,7 @@ import "../css/Login.css";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "../components/Button";
+import Input from "../components/Input";
 
 function Login() {
   const navigate = useNavigate();
@@ -93,9 +94,10 @@ function Login() {
           <p>Sign in to continue managing your tasks.</p>
 
           <div className="input-group">
-            <label>Email Address</label>
+            {/* <label>Email Address</label> */}
 
-            <input
+            <Input
+              label="Email"
               className={errors.email ? "error-input" : ""}
               type="email"
               placeholder="Enter your email"
@@ -110,9 +112,10 @@ function Login() {
           </div>
 
           <div className="input-group password-box login">
-            <label>Password</label>
+            {/* <label>Password</label> */}
 
-            <input
+            <Input
+              label="Password"
               className={errors.password ? "error-input" : ""}
               type={showPassword ? "text" : "password"}
               placeholder="Enter password"

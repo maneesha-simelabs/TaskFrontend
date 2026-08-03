@@ -182,12 +182,14 @@ export default function TaskModal({
             <option>Completed</option>
           </select>
 
-          <label>Due Date</label>
+          {/* <label>Due Date</label> */}
 
-          <input
+          <Input
+            label="DueDate"
             type="date"
             name="dueDate"
             value={form.dueDate}
+            required
             className={errors.dueDate ? "error-input" : ""}
             onChange={handleChange}
           />
