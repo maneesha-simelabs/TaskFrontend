@@ -34,3 +34,7 @@ font-family--Poppins
 or
 
 Inter
+
+
+ npx playwright test --debug 
+npx playwright test e2e/accessibility.spec.js

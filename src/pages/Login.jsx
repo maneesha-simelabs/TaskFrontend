@@ -55,8 +55,8 @@ function Login() {
   };
 
   return (
-    <div className="login-page">
-      <div className="left-panel">
+    <main className="login-page">
+      <aside className="left-panel">
         <h1>TaskFlow</h1>
 
         <p className="subtitle">
@@ -64,7 +64,7 @@ function Login() {
         </p>
 
         <div className="dashboard-card">
-          <h3>Today's Progress</h3>
+          <h2>Today's Progress</h2>
 
           <div className="task completed">✔ Authentication Module</div>
 
@@ -85,11 +85,11 @@ function Login() {
             </div>
           </div>
         </div>
-      </div>
+      </aside>
 
-      <div className="right-panel">
+      <section className="right-panel" aria-labelledby="login-heading">
         <form className="login-card" onSubmit={handleSubmit}>
-          <h2>Welcome Back 👋</h2>
+          <h2 id="login-heading">Welcome Back 👋</h2>
 
           <p>Sign in to continue managing your tasks.</p>
 
@@ -102,13 +102,19 @@ function Login() {
               type="email"
               placeholder="Enter your email"
               value={email}
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
               onChange={(e) => {
                 validate();
                 setEmail(e.target.value);
               }}
             />
 
-            {errors.email && <p className="error">{errors.email}</p>}
+            {errors.email && (
+              <p className="error" id="email-error">
+                {errors.email}
+              </p>
+            )}
           </div>
 
           <div className="input-group password-box login">
@@ -120,18 +126,33 @@ function Login() {
               type={showPassword ? "text" : "password"}
               placeholder="Enter password"
               value={password}
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? "password-error" : undefined}
               onChange={(e) => {
                 setPassword(e.target.value);
                 validate();
               }}
             />
-            <Button
+            {/* <Button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </Button> */}
+
+            <Button
+              type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </Button>
-            {errors.password && <p className="error">{errors.password}</p>}
+
+            {errors.password && (
+              <p className="error" id="password-error">
+                {errors.password}
+              </p>
+            )}
           </div>
 
           <div className="options">
@@ -162,8 +183,8 @@ function Login() {
             <a href="#">Create Account</a>
           </p> */}
         </form>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
 
