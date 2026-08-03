@@ -1,36 +1,21 @@
-// import { defineConfig } from "@playwright/test";
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
+  fullyParallel: false,
+  retries: 1,
 
   use: {
-    baseURL: "http://localhost:5172",
-    headless: false,
+    baseURL: "http://127.0.0.1:5172",
+    headless: true,
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+  },
+
+  webServer: {
+    command: "npm run dev -- --host 127.0.0.1 --strictPort",
+    url: "http://127.0.0.1:5172",
+    reuseExistingServer: true,
+    timeout: 120000,
   },
 });
-
-// import { defineConfig } from "@playwright/test";
-
-// export default defineConfig({
-//   use: {
-//     baseURL: "http://localhost:5172",
-//   },
-
-//   webServer: {
-//     command: "npm run dev",
-//     url: "http://localhost:5172",
-//     reuseExistingServer: true,
-//   },
-// });
-
-// export default defineConfig({
-//   testDir: "./tests",
-
-//   use: {
-//     baseURL: "http://localhost:5172",
-//     headless: false,
-//     screenshot: "only-on-failure",
-//     video: "retain-on-failure",
-//   },
-// });

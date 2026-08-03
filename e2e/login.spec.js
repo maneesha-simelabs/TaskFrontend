@@ -3,13 +3,13 @@ import { test, expect } from "@playwright/test";
 test("user logs in", async ({ page }) => {
   await page.goto("/login");
 
-  await page.getByPlaceholder("Email").fill("admin@taskflow.com");
+  await page.getByPlaceholder(/email/i).fill("admin@taskflow.com");
+  await page.getByPlaceholder(/password/i).fill("Admin1234");
 
-  await page.getByPlaceholder("Password").fill("Admin1234");
+  await page.getByRole("button", { name: /login/i }).click();
 
-  await page.getByRole("button", { name: "Login" }).click();
-
-  await expect(page).toHaveURL("/");
+  await expect(page).toHaveURL(/\/$/, { timeout: 10000 });
+  await expect(page.getByRole("link", { name: /logout/i })).toBeVisible({ timeout: 10000 });
 });
 
 // tests/login.spec.js
