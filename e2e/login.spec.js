@@ -9,7 +9,9 @@ test("user logs in", async ({ page }) => {
   await page.getByRole("button", { name: /login/i }).click();
 
   await expect(page).toHaveURL(/\/$/, { timeout: 10000 });
-  await expect(page.getByRole("link", { name: /logout/i })).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole("link", { name: /logout/i })).toBeVisible({
+    timeout: 10000,
+  });
 });
 
 // tests/login.spec.js
