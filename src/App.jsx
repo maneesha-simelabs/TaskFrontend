@@ -7,8 +7,7 @@ import Home from "./pages/Home";
 import AppRouter from "./AppRouter";
 import { BrowserRouter } from "react-router-dom";
 import { Suspense } from "react";
-
-
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -20,6 +19,7 @@ function App() {
           <AppRouter />
         </Suspense>
       </BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000}></ToastContainer>
       {/* <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />

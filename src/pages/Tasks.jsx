@@ -16,6 +16,8 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Card from "../components/Card";
 import DeleteModal from "../components/DeleteModal";
 import Button from "../components/Button";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Tasks({}) {
   const [tasks, setTasks] = useState([]);
@@ -31,7 +33,8 @@ export default function Tasks({}) {
   const isAdmin = currentUser?.role === "Admin";
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [curPage, setCurPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const curPage = Number(searchParams.get("page")) || 1;
   const [totalPages, setTotalPages] = useState(1);
 
   useLayoutEffect(() => {
@@ -130,6 +133,7 @@ export default function Tasks({}) {
   const handleDeleteConfirm = async () => {
     try {
       await deleteTask(selectedTask._id);
+      toast.success("Successfully Deleted a task!!");
       triggerReload();
     } catch (err) {
       console.error(err);
@@ -262,14 +266,16 @@ export default function Tasks({}) {
       {!loading && totalPages > 1 && (
         <div>
           <Button
-            onClick={() => setCurPage((p) => p - 1)}
+            // onClick={() => setCurPage((p) => p - 1)}
+            onClick={() => setSearchParams({ page: curPage - 1 })}
             disabled={curPage === 1}
             className="btn-secondary"
           >
             Prev
           </Button>
           <Button
-            onClick={() => setCurPage((p) => p + 1)}
+            // onClick={() => setCurPage((p) => p + 1)}
+            onClick={() => setSearchParams({ page: curPage + 1 })}
             disabled={curPage === totalPages}
             className="btn-secondary"
           >

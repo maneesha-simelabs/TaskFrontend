@@ -194,7 +194,7 @@ export default function TaskModal({
             onChange={handleChange}
           />
           <label htmlFor="assignedTo">
-            Assign To<span className="required-star">*</span>
+            AssignTo<span className="required-star">*</span>
           </label>
 
           <select

@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { AuthProvider } from "../contexts/AuthContext";
 import useAuth from "../hooks/useAuth";
+import { jest } from "@jest/globals";
 
 import { userLogin } from "../services/axios";
 
