@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../contexts/AuthContext";

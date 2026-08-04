@@ -1,5 +1,3 @@
-import React from "react";
-
 function FeatureCard() {
   return (
     <section className="features">

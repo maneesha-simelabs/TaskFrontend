@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import { FaTasks, FaUsers, FaChartLine, FaCalendarAlt } from "react-icons/fa";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import Button from "../components/Button";
 

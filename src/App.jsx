@@ -1,17 +1,11 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
+import { Suspense, lazy } from "react";
 import "./App.css";
-import Home from "./pages/Home";
-import AppRouter from "./AppRouter";
 import { BrowserRouter } from "react-router-dom";
-import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 
-function App() {
-  const [count, setCount] = useState(0);
+const AppRouter = lazy(() => import("./AppRouter"));
 
+function App() {
   return (
     <>
       <BrowserRouter>

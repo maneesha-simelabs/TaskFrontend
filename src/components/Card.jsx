@@ -1,5 +1,3 @@
-import React from "react";
-
 function Card({ title, children, actions, className }) {
   return (
     <article className={className} aria-label={title}>

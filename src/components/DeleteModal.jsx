@@ -1,14 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import "../css/DeleteModal.css";
 import Button from "./Button";
 
-function DeleteModal({
-  isDeleteModalOpen,
-  onClose,
-  onConfirm,
-  taskTitle,
-  taskId,
-}) {
+function DeleteModal({ isDeleteModalOpen, onClose, onConfirm, taskTitle }) {
   useEffect(() => {
     document.body.style.overflow = isDeleteModalOpen ? "hidden" : "";
 

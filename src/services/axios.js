@@ -149,32 +149,6 @@ export const myProfile = async () => {
   return unwrapResponseData(result);
 };
 
-const normalizeTaskPayload = (payload) => {
-  if (Array.isArray(payload)) {
-    return { tasks: payload, pagination: null };
-  }
-
-  const data = payload?.data ?? payload;
-
-  if (Array.isArray(data)) {
-    return { tasks: data, pagination: null };
-  }
-
-  if (Array.isArray(data?.tasks)) {
-    return { tasks: data.tasks, pagination: data.pagination ?? null };
-  }
-
-  if (Array.isArray(data?.data)) {
-    return { tasks: data.data, pagination: data.pagination ?? null };
-  }
-
-  if (Array.isArray(data?.items)) {
-    return { tasks: data.items, pagination: data.pagination ?? null };
-  }
-
-  return { tasks: [], pagination: null };
-};
-
 export async function getUsers(signal) {
   const response = await api.get(`/users`, { signal });
   const payload = unwrapResponseData(response);
@@ -241,7 +215,7 @@ export async function updateTask(task) {
 }
 
 export async function deleteTask(id) {
-  const result = await api.delete(`/tasks/${id}`, {
+  await api.delete(`/tasks/${id}`, {
     headers: {
       Authorization: `Bearer ${getRawTokenFromStorage()}`,
     },

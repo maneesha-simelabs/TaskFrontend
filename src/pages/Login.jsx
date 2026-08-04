@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import "../css/Login.css";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "../components/Button";
 import Input from "../components/Input";

@@ -12,14 +12,13 @@ import {
 } from "../services/axios";
 import TaskModal from "../components/TaskModal";
 import { AuthContext } from "../contexts/AuthContext";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import Card from "../components/Card";
 import DeleteModal from "../components/DeleteModal";
 import Button from "../components/Button";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export default function Tasks({}) {
+export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [open, setOpen] = useState(false);
   const [isDeleteModalOpen, setisDeleteModalOpen] = useState(false);

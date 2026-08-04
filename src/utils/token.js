@@ -13,7 +13,7 @@ function normalizeStoredToken(raw) {
       const parsed = JSON.parse(raw);
       return parsed?.token || parsed?.accessToken || null;
     }
-  } catch (e) {}
+  } catch {}
 
   return raw;
 }
@@ -55,7 +55,7 @@ export function isTokenExpired(tokenOrStored) {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     return payload.exp * 1000 < Date.now();
-  } catch (err) {
+  } catch {
     return true;
   }
 }

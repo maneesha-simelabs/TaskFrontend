@@ -5,7 +5,7 @@ import { getUsers } from "../services/axios";
 import Card from "../components/Card";
 import Button from "../components/Button";
 
-export default function Users({}) {
+export default function Users() {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const controller = new AbortController();
