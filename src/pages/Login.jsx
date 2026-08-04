@@ -28,7 +28,7 @@ function Login() {
         throw new Error(result?.message || "Login failed");
       }
 
-      navigate("/");
+      navigate("/tasks");
     } catch (e) {
       console.log(e.userMessage || e.message);
       setErrors({ submit: e.userMessage || e.message || "Login failed" });

@@ -6,13 +6,15 @@ import {
 } from "../utils/token";
 import { getApiErrorMessage } from "../utils/errorHandler";
 
+const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: apiBaseUrl,
   withCredentials: true,
 });
 
 const refreshApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: apiBaseUrl,
   withCredentials: true,
 });
 
