@@ -15,7 +15,7 @@ function ProtectedRoutes({ children }) {
   }
 
   if (!isLoggedIn) {
-    toast.error("Please Login First !!", { toastId: "login-success" });
+    // toast.error("Please Login First !!", { toastId: "login-success" });
     return <Navigate to="/login" replace></Navigate>;
   }
 
