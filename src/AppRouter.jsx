@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./Router/ProtectedRoutes";
 import ErrorBoundary from "./errorHandlers/ErrorBoundary";
+import Login from "./pages/Login";
 
 const HomePage = lazy(() => import("./pages/Home"));
 const RootLayoutPage = lazy(() => import("./layouts/RootLayout"));
@@ -10,7 +11,7 @@ const UsersPage = lazy(() => import("./pages/Users"));
 const TasksPage = lazy(() => import("./pages/Tasks"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPassword"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPassword"));
-const LoginPage = lazy(() => import("./pages/Login"));
+// const LoginPage = lazy(() => import("./pages/Login"));
 
 function AppRouter() {
   const routeFallback = <div>Loading page structure...</div>;
@@ -20,9 +21,9 @@ function AppRouter() {
         <Suspense fallback={routeFallback}>
           <Routes>
             <Route path="/home" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<RootLayoutPage />}>
-              <Route index element={<LoginPage />} />
+              <Route index element={<Login />} />
               <Route
                 path="users"
                 element={<ProtectedRoutes>{<UsersPage />}</ProtectedRoutes>}
