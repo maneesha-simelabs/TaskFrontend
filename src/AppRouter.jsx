@@ -22,7 +22,7 @@ function AppRouter() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<RootLayoutPage />}>
-              <Route index element={<DashboardPage />} />
+              <Route index element={<LoginPage />} />
               <Route
                 path="users"
                 element={<ProtectedRoutes>{<UsersPage />}</ProtectedRoutes>}
