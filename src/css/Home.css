@@ -357,10 +357,10 @@ body {
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
-.modal .form-group {
+/* .modal .form-group {
   width: 350px;
   margin: 0 auto;
-}
+} */
 
 .search-container .form-group {
   display: flex;
