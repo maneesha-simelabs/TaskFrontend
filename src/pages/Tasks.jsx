@@ -1,4 +1,9 @@
-import { useState, useLayoutEffect, useCallback } from "react";
+import {
+  useState,
+  useLayoutEffect,
+  useCallback,
+  useDeferredValue,
+} from "react";
 import "../css/Users.css";
 import "../css/Home.css";
 import { useEffect, useContext } from "react";
@@ -18,6 +23,7 @@ import DeleteModal from "../components/DeleteModal";
 import Button from "../components/Button";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Input from "../components/Input";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -36,6 +42,9 @@ export default function Tasks() {
   const [searchParams, setSearchParams] = useSearchParams();
   const curPage = Number(searchParams.get("page")) || 1;
   const [totalPages, setTotalPages] = useState(1);
+
+  const [searchText, setSearchText] = useState("");
+  const deferredQuery = useDeferredValue(searchText);
 
   useLayoutEffect(() => {
     if (!currentUser) {
@@ -86,7 +95,7 @@ export default function Tasks() {
         let nTotalPages = 1;
 
         if (isAdmin) {
-          const res = await getTasks(curPage, controller.signal);
+          const res = await getTasks(deferredQuery, curPage, controller.signal);
           nTasks = res?.tasks ?? [];
           nTotalPages = res?.pagination?.totalPages ?? 1;
           setTotalPages(nTotalPages);
@@ -109,7 +118,7 @@ export default function Tasks() {
     fetchTasks();
 
     return () => controller.abort();
-  }, [isAuthReady, reloadKey, curPage, currentUser?.role]);
+  }, [isAuthReady, reloadKey, curPage, currentUser?.role, deferredQuery]);
 
   const handleAdd = () => {
     setSelectedTask(null);
@@ -125,6 +134,10 @@ export default function Tasks() {
     setSelectedTask(task);
     setisDeleteModalOpen(true);
   }, []);
+
+  const handleChange = (e) => {
+    setSearchText(e.target.value);
+  };
 
   const triggerReload = () => {
     setReloadKey((prev) => prev + 1);
@@ -168,6 +181,27 @@ export default function Tasks() {
     }
   };
 
+  // useEffect(() => {
+  //   const search = async () => {
+  //     try {
+  //       // setLoading(true);
+  //       let similarTasks = [];
+
+  //       if (deferredQuery.length) {
+  //         similarTasks = await searchMovie(deferredQuery);
+  //       }
+
+  //       setTasks(similarTasks);
+  //     } catch (exception) {
+  //       // setShowError(true);
+  //     } finally {
+  //       // setLoading(false);
+  //     }
+  //   };
+
+  //   search();
+  // }, [deferredQuery]);
+
   return (
     <section className="users-section">
       <div className="modal-header">
@@ -180,6 +214,15 @@ export default function Tasks() {
           </div>
         )}
       </div>
+      {isAdmin && (
+        <div className="search-container" style={{ textAlign: "centre" }}>
+          <Input
+            label="Search"
+            onChange={handleChange}
+            value={searchText}
+          ></Input>
+        </div>
+      )}
       <div className="users-grid" style={{ minHeight: "180px" }}>
         {!isAuthReady && <p>Preparing your tasks...</p>}
         {isAuthReady && loading && <p>Loading tasks...</p>}
