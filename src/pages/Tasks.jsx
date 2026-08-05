@@ -130,7 +130,7 @@ export default function Tasks() {
         setTotalPages(nTotalPages);
         setError("");
       } catch (err) {
-        if (err.name === "AbortError") {
+        if (err.name === "AbortError" || err.name == "CanceledError") {
           return; // Ignore cancelled requests
         }
         console.error(err);
