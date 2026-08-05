@@ -130,6 +130,9 @@ export default function Tasks() {
         setTotalPages(nTotalPages);
         setError("");
       } catch (err) {
+        if (err.name === "AbortError") {
+          return; // Ignore cancelled requests
+        }
         console.error(err);
         setTasks([]);
         setError("Unable to load tasks right now.");
