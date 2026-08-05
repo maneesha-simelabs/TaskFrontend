@@ -97,7 +97,7 @@ export default function Home() {
           <div className="progress">
             <div className="progress-text">
               <span>Project Progress</span>
-              <span>74%</span>
+              <span>73%</span>
             </div>
 
             <div className="progress-bar">
