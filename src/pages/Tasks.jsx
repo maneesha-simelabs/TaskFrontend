@@ -3,6 +3,7 @@ import {
   useLayoutEffect,
   useCallback,
   useDeferredValue,
+  useMemo,
 } from "react";
 import "../css/Users.css";
 import "../css/Home.css";
@@ -45,6 +46,28 @@ export default function Tasks() {
 
   const [searchText, setSearchText] = useState("");
   const deferredQuery = useDeferredValue(searchText);
+
+  const filteredTasks = useMemo(() => {
+    const query = deferredQuery.trim().toLowerCase();
+
+    if (!query) return tasks;
+
+    return tasks.filter((task) => {
+      const haystack = [
+        task?.title,
+        task?.description,
+        task?.status,
+        task?.priority,
+        task?.category?.name,
+        task?.assignedTo?.name,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(query);
+    });
+  }, [tasks, deferredQuery]);
 
   useLayoutEffect(() => {
     if (!currentUser) {
@@ -120,10 +143,10 @@ export default function Tasks() {
     return () => controller.abort();
   }, [isAuthReady, reloadKey, curPage, currentUser?.role, deferredQuery]);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     setSelectedTask(null);
     setOpen(true);
-  };
+  }, []);
 
   const handleEdit = useCallback((task) => {
     setSelectedTask(task);
@@ -135,13 +158,13 @@ export default function Tasks() {
     setisDeleteModalOpen(true);
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     setSearchText(e.target.value);
-  };
+  }, []);
 
-  const triggerReload = () => {
+  const triggerReload = useCallback(() => {
     setReloadKey((prev) => prev + 1);
-  };
+  }, []);
 
   const handleDeleteConfirm = async () => {
     try {
@@ -228,11 +251,11 @@ export default function Tasks() {
         {isAuthReady && loading && <p>Loading tasks...</p>}
         {error && <p className="error">{error}</p>}
 
-        {!loading && !error && tasks?.length === 0 && (
+        {!loading && !error && filteredTasks?.length === 0 && (
           <p>No tasks available.</p>
         )}
 
-        {tasks.map((task) => (
+        {filteredTasks.map((task) => (
           <Card
             key={task._id}
             className="cd-card"
