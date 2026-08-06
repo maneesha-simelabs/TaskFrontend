@@ -115,6 +115,7 @@ export default function TaskModal({
     return !hasError;
   };
 
+  const today = new Date().toISOString().split("T")[0];
   return (
     <div className="modal-backdrop">
       <div className="modal">
@@ -189,6 +190,7 @@ export default function TaskModal({
             type="date"
             name="dueDate"
             value={form.dueDate}
+            min={today}
             required
             className={errors.dueDate ? "error-input" : ""}
             onChange={handleChange}

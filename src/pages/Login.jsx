@@ -116,10 +116,41 @@ function Login() {
               </p>
             )}
           </div>
+          <div className="input-group login">
+            <div className="password-box">
+              <Input
+                label="Password"
+                className={errors.password ? "error-input" : ""}
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                value={password}
+                aria-invalid={!!errors.password}
+                aria-describedby={
+                  errors.password ? "password-error" : undefined
+                }
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  validate();
+                }}
+              />
 
-          <div className="input-group password-box login">
-            {/* <label>Password</label> */}
+              <Button
+                type="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </Button>
+            </div>
 
+            {errors.password && (
+              <p className="error" id="password-error">
+                {errors.password}
+              </p>
+            )}
+          </div>
+          {/* <div className="input-group password-box login">
+          
             <Input
               label="Password"
               className={errors.password ? "error-input" : ""}
@@ -133,12 +164,6 @@ function Login() {
                 validate();
               }}
             />
-            {/* <Button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </Button> */}
 
             <Button
               type="button"
@@ -153,7 +178,7 @@ function Login() {
                 {errors.password}
               </p>
             )}
-          </div>
+          </div> */}
 
           <div className="options">
             <label>

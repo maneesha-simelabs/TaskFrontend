@@ -135,7 +135,39 @@
     grid-template-columns: 1fr;
   }
 }
+/* 
+.overdue-card {
+  background-color: #ffe5e5;
+  border: 2px solid #e53935;
+} */
 
+.cd-card {
+  position: relative;
+}
+
+.overdue-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.password-box {
+  position: relative;
+}
+
+.password-box button {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+}
+
+.password-box input {
+  padding-right: 45px;
+}
 /* .task-actions {
   display: flex;
 

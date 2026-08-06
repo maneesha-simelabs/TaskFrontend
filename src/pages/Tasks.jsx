@@ -211,6 +211,16 @@ export default function Tasks() {
     }
   };
 
+  const isOverdue = (dueDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+
+    return due < today;
+  };
+
   // useEffect(() => {
   //   const search = async () => {
   //     try {
@@ -263,45 +273,53 @@ export default function Tasks() {
         )}
 
         {filteredTasks.map((task) => (
-          <Card
-            key={task._id}
-            className="cd-card"
-            title={task.title}
-            actions={
-              isAdmin
-                ? [
-                    <Button
-                      key="edit"
-                      onClick={() => handleEdit(task)}
-                      className="edit-btn"
-                    >
-                      ✏️
-                    </Button>,
-                    <Button
-                      key="delete"
-                      onClick={() => handleDelete(task)}
-                      className="delete-btn"
-                    >
-                      🗑️
-                    </Button>,
-                  ]
-                : null
-            }
-          >
-            <>
-              <p>{task.description}</p>
-              <span
-                style={{ backgroundColor: task.color }}
-                className="status-badge"
-              >
-                Status: {task.status} <br />
-                Priority: {task.priority} <br />
-                Due: {task.dueDate} <br />
-                Category: {task.category?.name || "None"} <br />
-                Assigned To: {task.assignedTo?.name || "Unassigned"}
-              </span>
-            </>
-          </Card>
+          <div className="task-card-wrapper" key={task._id}>
+            {/* {isOverdue(task.dueDate) && (
+              <span className="overdue-badge">Overdue</span>
+            )} */}
+            <Card
+              key={task._id}
+              className={`cd-card ${isOverdue(task.dueDate) ? "overdue-card" : ""}`}
+              title={task.title}
+              actions={
+                isAdmin
+                  ? [
+                      <Button
+                        key="edit"
+                        onClick={() => handleEdit(task)}
+                        className="edit-btn"
+                      >
+                        ✏️
+                      </Button>,
+                      <Button
+                        key="delete"
+                        onClick={() => handleDelete(task)}
+                        className="delete-btn"
+                      >
+                        🗑️
+                      </Button>,
+                    ]
+                  : null
+              }
+            >
+              <>
+                {isOverdue(task.dueDate) && (
+                <span className="overdue-badge">Overdue</span>
+              )}
+                <p>{task.description}</p>
+                <span
+                  style={{ backgroundColor: task.color }}
+                  className="status-badge"
+                >
+                  Status: {task.status} <br />
+                  Priority: {task.priority} <br />
+                  Due: {task.dueDate} <br />
+                  Category: {task.category?.name || "None"} <br />
+                  Assigned To: {task.assignedTo?.name || "Unassigned"}
+                </span>
+              </>
+            </Card>
+          </div>
         ))}
 
         {/* {tasks?.map((task) => (
