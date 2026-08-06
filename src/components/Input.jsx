@@ -10,23 +10,29 @@ function Input({
   className,
   ...props
 }) {
+  const inputId = name || label?.toLowerCase().replace(/\s+/g, "-");
+  const inputProps = {
+    id: inputId,
+    name: name || inputId,
+    value: value ?? "",
+    onChange,
+    placeholder,
+    className,
+    "aria-invalid": Boolean(error),
+    ...props,
+  };
+
   return (
     <div className="form-group">
-      <label htmlFor={name}>
+      <label htmlFor={inputId}>
         {label}
         {required && <span className="required-star">*</span>}
       </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={value ?? ""}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={className}
-        aria-invalid={Boolean(error)}
-        {...props}
-      />
+      {type === "textarea" ? (
+        <textarea {...inputProps} />
+      ) : (
+        <input type={type} {...inputProps} />
+      )}
       {error && <p className="error-text">{error}</p>}
     </div>
   );

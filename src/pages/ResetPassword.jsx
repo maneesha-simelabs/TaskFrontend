@@ -81,6 +81,7 @@ export default function ResetPassword() {
           <div className="password-box">
             <Input
               label="New Password"
+              name="password"
               type={showPassword ? "text" : "password"}
               value={values.password}
               onChange={(e) =>
@@ -104,6 +105,7 @@ export default function ResetPassword() {
           <div className="password-box">
             <Input
               label="Confirm Password"
+              name="confirmPassword"
               type={showConfirm ? "text" : "password"}
               value={values.confirmPassword}
               onChange={(e) =>
@@ -121,7 +123,9 @@ export default function ResetPassword() {
 
           {error && <p className="error">{error}</p>}
 
-          <Button className="btn-primary">Reset Password</Button>
+          <Button type="submit" className="btn-primary">
+            Reset Password
+          </Button>
         </form>
       </div>
     </div>

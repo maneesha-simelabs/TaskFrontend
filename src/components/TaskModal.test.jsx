@@ -41,10 +41,7 @@ describe("TaskModal", () => {
     await userEvent.type(screen.getByLabelText(/duedate/i), "2026-08-10");
     await userEvent.selectOptions(screen.getByLabelText(/priority/i), "High");
     await userEvent.selectOptions(screen.getByLabelText(/status/i), "Todo");
-    await userEvent.selectOptions(
-      screen.getByLabelText(/assign to/i),
-      "user-1",
-    );
+    await userEvent.selectOptions(screen.getByLabelText(/assignto/i), "user-1");
     await userEvent.selectOptions(screen.getByLabelText(/category/i), "cat-1");
     await userEvent.click(screen.getByRole("button", { name: /create/i }));
 

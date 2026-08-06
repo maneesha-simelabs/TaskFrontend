@@ -7,13 +7,17 @@ import { userLogin } from "../services/axios";
 
 jest.mock("../services/axios");
 
-jest.mock("../utils/token", () => ({
-  setStoredAuthValue: jest.fn(),
-  clearStoredAuthValues: jest.fn(),
-  getRawTokenFromStorage: jest.fn(() => null),
-  getRefreshTokenFromStorage: jest.fn(),
-  isTokenExpired: jest.fn(() => false),
-}));
+jest.mock("../utils/token", () => {
+  const { jest } = require("@jest/globals");
+
+  return {
+    setStoredAuthValue: jest.fn(),
+    clearStoredAuthValues: jest.fn(),
+    getRawTokenFromStorage: jest.fn(() => null),
+    getRefreshTokenFromStorage: jest.fn(),
+    isTokenExpired: jest.fn(() => false),
+  };
+});
 
 userLogin.mockResolvedValue({
   data: {

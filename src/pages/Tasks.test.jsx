@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import Tasks from "./Tasks";
 import { AuthContext } from "../contexts/AuthContext";
 import {
@@ -21,7 +22,9 @@ jest.mock("../services/axios", () => ({
 
 function renderWithAuth(ui, user) {
   return render(
-    <AuthContext.Provider value={{ user }}>{ui}</AuthContext.Provider>,
+    <MemoryRouter>
+      <AuthContext.Provider value={{ user }}>{ui}</AuthContext.Provider>
+    </MemoryRouter>,
   );
 }
 

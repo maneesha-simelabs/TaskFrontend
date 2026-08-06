@@ -43,6 +43,7 @@ export default function ForgotPassword() {
 
           <Input
             label="Email"
+            name="email"
             type="email"
             placeholder="Enter email"
             value={email}
@@ -52,7 +53,9 @@ export default function ForgotPassword() {
           {error && <p className="error">{error}</p>}
           {message && <p className="success">{message}</p>}
 
-          <Button className="btn-primary">Send Reset Link</Button>
+          <Button type="submit" className="btn-primary">
+            Send Reset Link
+          </Button>
         </form>
 
         <Link to="/login" className="back-link">
