@@ -6,11 +6,13 @@ import {
 } from "../utils/token";
 import { getApiErrorMessage } from "../utils/errorHandler";
 
-const apiBaseUrl =
-  (typeof globalThis !== "undefined" &&
-    globalThis.__APP_CONFIG__?.VITE_API_URL) ||
-  (typeof process !== "undefined" && process.env?.VITE_API_URL) ||
-  "http://localhost:5000/api";
+const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+// const apiBaseUrl =
+//   (typeof globalThis !== "undefined" &&
+//     globalThis.__APP_CONFIG__?.VITE_API_URL) ||
+//   (typeof process !== "undefined" && process.env?.VITE_API_URL) ||
+//   "http://localhost:5000/api";
 
 const api = axios.create({
   baseURL: apiBaseUrl,
