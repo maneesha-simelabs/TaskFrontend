@@ -17,7 +17,9 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: ["node", "node-addons"],
   },
-  transformIgnorePatterns: ["node_modules/(?!(axios|react-router|@testing-library)/)"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(axios|react-router|@testing-library)/)",
+  ],
   globals: {
     "process.env": {
       VITE_API_URL: "http://localhost:5000/api",

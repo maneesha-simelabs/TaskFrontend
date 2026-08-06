@@ -36,10 +36,17 @@ describe("ResetPassword", () => {
     );
 
     await userEvent.type(screen.getByLabelText(/new password/i), "short");
-    await userEvent.type(screen.getByLabelText(/confirm password/i), "different");
-    await userEvent.click(screen.getByRole("button", { name: /reset password/i }));
+    await userEvent.type(
+      screen.getByLabelText(/confirm password/i),
+      "different",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: /reset password/i }),
+    );
 
-    expect(await screen.findByText(/password must contain at least 8 characters/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/password must contain at least 8 characters/i),
+    ).toBeInTheDocument();
   });
 
   it("submits a valid password and navigates to login", async () => {
@@ -52,8 +59,13 @@ describe("ResetPassword", () => {
     );
 
     await userEvent.type(screen.getByLabelText(/new password/i), "Strong123");
-    await userEvent.type(screen.getByLabelText(/confirm password/i), "Strong123");
-    await userEvent.click(screen.getByRole("button", { name: /reset password/i }));
+    await userEvent.type(
+      screen.getByLabelText(/confirm password/i),
+      "Strong123",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: /reset password/i }),
+    );
 
     expect(resetPassword).toHaveBeenCalledWith("", "Strong123");
     expect(window.alert).toHaveBeenCalledWith("Password changed successfully");

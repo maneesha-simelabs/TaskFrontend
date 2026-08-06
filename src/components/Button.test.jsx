@@ -19,7 +19,11 @@ describe("Button", () => {
   it("renders a disabled button", async () => {
     const onClick = jest.fn();
 
-    render(<Button disabled onClick={onClick}>Disabled</Button>);
+    render(
+      <Button disabled onClick={onClick}>
+        Disabled
+      </Button>,
+    );
 
     const button = screen.getByRole("button", { name: /disabled/i });
     expect(button).toBeDisabled();

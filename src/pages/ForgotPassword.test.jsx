@@ -20,7 +20,9 @@ describe("ForgotPassword", () => {
       </MemoryRouter>,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /send reset link/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /send reset link/i }),
+    );
 
     expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
   });
@@ -34,8 +36,13 @@ describe("ForgotPassword", () => {
       </MemoryRouter>,
     );
 
-    await userEvent.type(screen.getByPlaceholderText(/enter email/i), "user@example.com");
-    await userEvent.click(screen.getByRole("button", { name: /send reset link/i }));
+    await userEvent.type(
+      screen.getByPlaceholderText(/enter email/i),
+      "user@example.com",
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: /send reset link/i }),
+    );
 
     expect(await screen.findByText(/reset link sent/i)).toBeInTheDocument();
   });

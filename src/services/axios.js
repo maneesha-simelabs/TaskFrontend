@@ -7,7 +7,8 @@ import {
 import { getApiErrorMessage } from "../utils/errorHandler";
 
 const apiBaseUrl =
-  (typeof globalThis !== "undefined" && globalThis.__APP_CONFIG__?.VITE_API_URL) ||
+  (typeof globalThis !== "undefined" &&
+    globalThis.__APP_CONFIG__?.VITE_API_URL) ||
   (typeof process !== "undefined" && process.env?.VITE_API_URL) ||
   "http://localhost:5000/api";
 

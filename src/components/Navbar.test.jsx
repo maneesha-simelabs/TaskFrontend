@@ -33,7 +33,9 @@ describe("NavBar", () => {
 
     render(
       <MemoryRouter>
-        <AuthContext.Provider value={{ user: { data: { user: { role: "Admin" } } }, logout }}>
+        <AuthContext.Provider
+          value={{ user: { data: { user: { role: "Admin" } } }, logout }}
+        >
           <NavBar />
         </AuthContext.Provider>
       </MemoryRouter>,
@@ -50,12 +52,19 @@ describe("NavBar", () => {
   it("hides the users link for non-admins", () => {
     render(
       <MemoryRouter>
-        <AuthContext.Provider value={{ user: { data: { user: { role: "User" } } }, logout: jest.fn() }}>
+        <AuthContext.Provider
+          value={{
+            user: { data: { user: { role: "User" } } },
+            logout: jest.fn(),
+          }}
+        >
           <NavBar />
         </AuthContext.Provider>
       </MemoryRouter>,
     );
 
-    expect(screen.queryByRole("link", { name: /users/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /users/i }),
+    ).not.toBeInTheDocument();
   });
 });
